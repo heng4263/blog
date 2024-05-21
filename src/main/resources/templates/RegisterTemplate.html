@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${title}]]</title>
+</head>
+<body>
+<div style="background-color:#ECECEC; padding: 15px;">
+    <table cellpadding="0" align="center"
+           style="width: 600px; margin: 0px auto; text-align: left; position: relative; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; font-size: 14px; font-family:微软雅黑, 黑体; line-height: 1.5; box-shadow: rgb(153, 153, 153) 0px 0px 5px; border-collapse: collapse; background-position: initial initial; background-repeat: initial initial;background:#fff;">
+        <tbody>
+        <tr>
+            <th valign="middle"
+                style="height: 25px; line-height: 25px; padding: 15px 35px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #42a3d3; background-color: #16b9a9; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                <font face="微软雅黑" size="5" style="color: rgb(255, 255, 255); ">[[${codeType}]]</font>
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <div style="padding:25px 35px 40px; background-color:#fff;">
+                    <h2 style="margin: 5px 0px; ">
+                        <font color="#333333" style="line-height: 20px; ">
+                            <font style="line-height: 22px; " size="4">
+                                亲爱的<b>[[${email}]]</b>，您好：</font>
+                        </font>
+                    </h2>
+                    <p>首先感谢您使用KKBlog，您的验证码是:<br><br>
+                        <a style="font-size: 24px;font-weight: bold;text-decoration: underline" >[[${code}]]</a><br><br>
+<!--                        <b style="font-size: 18px">[[${code}]]</b><br>-->
+                        验证驸5分钟内有效，为了保障您的账户安全，请勿向任何人提供此验证码。感谢您的支持!<br>
+                        如果您有什么疑问可以联系管理员，Email: 2250671362@qq.com</p>
+                    <p align="right">KKBlog</p>
+                    <p align="right">[[${date}]]</p>
+                    <div style="width:700px;margin:0 auto;">
+                        <div style="padding:10px 10px 0;border-top:1px solid #ccc;color:#747474;margin-bottom:20px;line-height:1.3em;font-size:12px;">
+                            <p>本邮件系统自动发送，请勿回复!<br>
+                                请保管好您的邮箱，避免账号被他人盗用
+                            </p>
+                            <p>© 2024 Powered by Derek</p>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,496 @@
+body {
+    background: rgb(243, 243, 243);
+}
+.myui-card-footer {
+    font-size: 12px;
+    display: flex;
+    color: #707070;
+    position: relative;
+}
+.layui-icon {
+    font-size: 12px;
+}
+.layui-icon-rate{
+    font-size: 12px;
+}
+.myui-gap {
+    margin-right: 10px;
+}
+.myui-gap.active {
+    color: #16B9A9 !important;
+}
+.myui-gap:hover {
+    cursor: pointer;
+    color: #464947;
+}
+.myui-card-content {
+    /*padding: 5px;*/
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 15px;
+    color: #707070;
+    cursor: pointer;
+    word-wrap: break-word;
+    word-break:break-all;
+}
+.myui-nickname {
+    font-size: 16px;
+    font-weight: bold;
+    color: RGB(112,114,124);
+}
+.layui-card.myui-card {
+    display: flex;
+}
+.myui-card{
+    transition: 0.5s;
+    margin-bottom: 10px!important;
+}
+.myui-card:hover {
+    background-color: #f3f3f3;
+}
+.myui-avatar-container {
+    padding-left: 10px;
+    padding-top: 10px;
+}
+.myui-avatar-small {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+.myui-avatar-small:hover {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+}
+.myui-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+.myui-avatar:hover {
+    width: 45px;
+    height: 45px;
+}
+.myui-avatar-middle {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+.myui-avatar-middle:hover {
+    width: 55px;
+    height: 55px;
+}
+.myui-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+    transition: 0.5s;
+}
+.myui-top-tip {
+    border: solid 1px;
+    color: RGB(250,81,81);
+    font-size: 13px;
+    margin-left: 5px;
+    padding: 2px;
+}
+.myui-time-tip {
+    color: RGB(119,121,131);
+    font-size: 13px;
+    font-weight: bold;
+    float: right;
+}
+.myui-topic-tip {
+    text-align: center;
+    position: absolute;
+    margin-left: 90%;
+    height: 18px;
+    padding-left: 4px;
+    padding-right: 4px;
+    line-height: 18px;
+    border: 1px #707070 solid;
+    border-radius: 10px;
+}
+.myui-card-titler {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+}
+.myui-menu-body-title {
+    color: #867290;
+    padding: 3px 3px 3px 10px;
+    border-radius: 3px;
+    width: 80%;
+}
+.myui-menu-body-title:hover{
+    color: #867290;
+    padding: 3px 3px 3px 10px;
+    border-radius: 3px;
+    width: 80%;
+    background: #e8e8e8;
+}
+.myui-active.myui-menu-body-title{
+    background: #16b9a9;
+    padding: 3px 3px 3px 10px;
+    border-radius: 3px;
+    color: white;
+}
+.myui-top-image {
+    width: 28px;
+    border-radius: 4px
+}
+.myui-topic-name {
+    margin-left: 5px;
+    line-height: 28px
+}
+
+.myui-side-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+.myui-side-card {
+    width: 100%;
+}
+
+.myui-image-ul {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0;
+}
+.myui-image-li {
+    white-space:nowrap;
+    line-height: 120px;
+    width: 120px;
+    height: 120px;
+    display: block;
+    float: left;
+    margin: 2px
+}
+.myui-list-image {
+    height: 100%;
+    width: 100%;
+    border-radius: 2px;
+    object-fit: cover;
+    transition-duration: 500ms;
+}
+.myui-list-image:hover {
+    height: 103%;
+    width: 103%;
+}
+
+.myui-font-color-gray {
+    color: #707070;
+}
+.myui-font-color-deep-gray {
+    color: #565454;
+}
+.myui-background-color-light-gray {
+    background-color: #f8f8f8;
+}
+.myui-background-color-gray {
+    background-color: #707070;
+}
+.myui-background-color-deep-gray {
+    background-color: #565454;
+}
+
+.myui-image-li-middle {
+    white-space:nowrap;
+    line-height: 180px;
+    width: 180px;
+    height: 180px;
+    display: block;
+    float: left;
+    margin: 2px
+}
+
+.myui-circled-word {
+    height: 18px;
+    padding: 3px 7px 3px 7px;
+    line-height: 18px;
+    border: 1px #e1e1e1 solid;
+    border-radius: 10px;
+    margin-right: 5px;
+    background: #fafafa;;
+    color: #8c8b8b;
+    cursor: pointer!important;
+}
+.myui-circled-word:hover{
+    background-color: #eaeaea;
+}
+.myui-circled-word:active{
+    background-color: #d7d7d7;
+}
+.myui-image-icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+.myui-icon-press:hover {
+    color: #918d8d;
+    cursor: pointer;
+}
+.myui-icon-press:active {
+    color: #1e9fff;
+}
+.myui-icon-press.active {
+    color: #16BAAA;
+}
+/*居中排布*/
+.myui-layout-center {
+    display: flex;
+    justify-content: center;
+}
+
+/*主题选择*/
+.myui-topic-selections {
+    font-weight: bold;
+    padding: 3px 7px;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e7e5e5;
+    color: #5b5b5b;
+    background-color: #efefef;
+    margin-right: 12px;
+}
+.myui-topic-selections.active {
+    color: white;
+    background-color: #16BAAA;
+}
+.myui-topic-selections:hover {
+    cursor: pointer;
+    color: #009688;
+    background-color: #fffdfd;
+}
+
+/*输入框样式*/
+.myui-textarea {
+    height: 200px;
+    overflow-y: scroll;
+}
+
+.myui-user-background {
+    height: 240px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    position: relative;
+}
+.myui-user-avatar-container {
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    bottom: 30px;
+    left: 20px;
+    align-content: center;
+}
+.myui-user-nickname-panel {
+    position: absolute;
+    bottom: 0;
+    height: 70px;
+    width: 90%;
+    background: linear-gradient(to right, rgb(255, 255, 255), rgba(255, 0, 0, 0));
+}
+.myui-user-avatar {
+    border-radius: 50%;
+    height: 98%;
+    width: 98%;
+    transition-duration: 500ms;
+}
+.myui-user-avatar:hover {
+    border-radius: 50%;
+    height: 100%;
+    width: 100%;
+}
+.myui-subscribe-btn {
+    background-color: #02b09e;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+.myui-subscribe-btn:hover {
+    background-color: #078378!important;
+}
+.myui-subscribe-btn.list {
+    float: right;
+    margin-right: -10px;
+    margin-top: 5px;
+}
+.myui-subscribe-btn.active {
+    background: #7d8383;
+}
+
+.myui-logo-container {
+    width: 55px;
+    height: 55px;
+    padding: 5px 0 0 10px;
+
+}
+
+.myui-tag-select {
+    width: 100%;
+    border-right: solid;
+    border-bottom: solid;
+    border-left: solid;
+    border-width: 1px;
+    border-color: #d2d2d2;
+    height: 0;
+    overflow-y: scroll;
+    scrollbar-width: none !important;
+}
+.myui-tag-select.active {
+    height: auto;
+    transition-duration: 300ms;
+ }
+.myui-tag-option {
+    height: 38px;
+    line-height: 38px;
+    padding-left: 12px;
+    background-color: white;
+    display: flex;
+    position: relative;
+}
+
+.myui-tag-option:hover {
+    background-color: #009688;
+    color: whitesmoke;
+    cursor: pointer;
+}
+
+.myui-other-user-nickname {
+    color: #277c7c;
+}
+.myui-other-user-nickname:hover {
+    color: #0badef;
+    cursor: pointer;
+}
+
+.myui-comment-content {
+    margin-top: 10px!important;
+    word-wrap: break-word;
+    word-break:break-all;
+    color: dimgray;
+}
+
+.myui-hide {
+    display: none !important;
+}
+
+.myui-pointer:hover {
+    color: #0badef;
+    cursor: pointer;
+}
+
+.myui-submenu {
+    margin-left: 20px;
+    cursor: pointer;
+}
+.myui-submenu.active {
+    color: #0758d2;
+}
+
+.myui-change-bg-btn {
+    position:absolute;
+    right: 40px;top: 30px;
+    background-color: whitesmoke;
+    opacity: 80%;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.myui-change-bg-btn:hover{
+    background-color: #e0dfdf;
+}
+.myui-change-bg-btn:active{
+    background-color: #bdbcbc;
+}
+
+.myui-a-tag {
+    cursor: pointer;
+}
+.myui-a-tag:hover {
+    color: #0758d2;
+}
+.myui-author-tag {
+    font-size: 10px;
+    padding: 2px 4px;
+    color: #e15035;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e15035;
+    border-radius: 2px;
+    margin-left: 1px;
+}
+
+.myui-comment-reply-content {
+    background-color: #eeecec;
+    padding: 2px 20px 2px 10px;
+    border-radius: 2px;
+    color: rgb(128, 128, 128);
+    font-size: 12px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(210, 206, 206);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    word-wrap: break-word;
+    word-break:break-all;
+}
+.myui-comment-reply-content:after{
+    position: absolute;
+    content: '”';
+    right: 5px;
+    font-family: Georgia, serif;
+    font-size: 36px;
+    font-weight: 700;
+    top: 0;
+}
+
+.myui-comment-ip-location {
+    float: right;
+    margin-right: 10px;
+    line-height: 10px;
+    /*margin-top: 3px;*/
+}
+
+/*body {*/
+/*    background-image: url("/avatars/background/bg_1.png") !important;*/
+/*    !*backdrop-filter: blur(5px);*!*/
+/*    !*background-size: cover;*!*/
+/*    !*background-position: center;*!*/
+/*    opacity: 0.9; !* 可以设置透明度，但不是必须的 *!*/
+/*}*/
+.myui-title-active a{
+    color: #01b4a3 !important;
+}
+
+#menu-container a{
+    color: #656464;
+}
+#menu-container a:before{
+    content: '·';
+    margin-right: 4px;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    top: 0;
+}
+#menu-container a:hover{
+    color: #4949f3;
+}
+
+.myui-article-title {
+    cursor: pointer;
+}
+.myui-article-title:hover{
+    text-decoration: underline;
+    color: #01b4a3;
+    font-weight: 500;
+    line-height: 30px;
+}

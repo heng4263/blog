@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragment::head('修改个人信息')">
+    <meta charset="UTF-8">
+    <title>修改个人信息</title>
+    <!-- 请勿在项目正式环境中引用该 layui.css 地址 -->
+    <link href="../static/layui/layui.css" rel="stylesheet">
+    <link href="../static/css/myui.css" rel="stylesheet">
+    <link href="../static/css/preview.css" rel="stylesheet">
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/jquery/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <ul class="layui-nav" th:replace="_fragment::navigate(${user}, 0)">
+        <li class="layui-nav-item">
+            <a href="">带徽章<span class="layui-badge">9</span></a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="">小圆点<span class="layui-badge-dot"></span></a>
+        </li>
+        <li class="layui-nav-item" lay-unselect>
+            <a href="javascript:;">
+                <img src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg" class="layui-nav-img">
+            </a>
+            <dl class="layui-nav-child">
+                <dd><a href="javascript:;">子级菜单</a></dd>
+                <dd><a href="javascript:;">横线隔断</a></dd>
+                <hr>
+                <dd style="text-align: center;"><a href="">退出</a></dd>
+            </dl>
+        </li>
+    </ul>
+
+    <div class="layui-container" style="margin-top: 15px">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md3">
+                <div class="layui-panel">
+                    <ul class="layui-menu">
+                        <li>
+                            <div class="myui-menu-body-title myui-active" id="profile-setting" onclick="changePanel('profile')">
+                                <img class="myui-top-image" th:src="@{/avatars/icon/profile.png}" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+                                <span class="myui-topic-name">个人资料</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="myui-menu-body-title" id="account-setting" onclick="changePanel('account')">
+                                <img class="myui-top-image" th:src="@{/avatars/icon/setting.png}" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+                                <span class="myui-topic-name">账号设置</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="layui-col-md9" id="panel-container">
+                <div class="layui-card" id="profile-panel" style="padding: 15px 10px">
+                    <span class="myui-nickname layui-font-18" style="color: black">修改个人资料</span>
+                    <a style="float: right;margin-right: 10px" th:href="@{/user/me}">返回主页
+                        <i class="layui-icon layui-icon-return"></i></a>
+                    <hr>
+                    <form class="layui-form" action="" id="my-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">头像</label>
+                            <div class="layui-input-block">
+                                <input id="file-input" type="file" class="myui-hide" accept="image/*">
+                                <img class="myui-avatar-large" id="user-avatar" th:src="@{${user.avatar}}" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">昵称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="nickname" th:value="${user.nickname}" required  lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">性别</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="gender" value="男" title="男" th:checked="${user.gender=='男'}">
+                                <input type="radio" name="gender" value="女" title="女" checked th:checked="${user.gender=='女'}">
+                                <input type="radio" name="gender" value="" title="保密" checked th:checked="${#strings.isEmpty(user.gender)}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">友链</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="link" th:value="${user.link}" placeholder="请输入友情链接" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">签名</label>
+                            <div class="layui-input-block">
+                                <span class="layui-font-14 myui-font-color-gray"><span id="signature-length">0</span>/120</span>
+                                <textarea maxlength="120" name="signature" placeholder="请输入内容" id="signature-input" th:utext="${user.signature}" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" type="submit" lay-submit lay-filter="formDemo">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card myui-hide" id="account-panel" style="padding: 15px 10px">
+                    <span class="myui-nickname layui-font-18" style="color: black">修改账号设置</span>
+                    <a style="float: right;margin-right: 10px" th:href="@{/user/me}">返回主页
+                        <i class="layui-icon layui-icon-return"></i></a>
+                    <hr>
+                    <div class="layui-row" style="padding: 10px 50px">
+                        <div class="layui-row layui-font-16" style="display: flex;position: relative;margin-top: 10px">
+                            <span style="width: 80px">用户名</span>
+                            <span th:text="${user.username}">小可</span>
+                            <a class="myui-font-color-gray layui-font-14" style="position: absolute;right: 15px">不可修改</a>
+                        </div>
+                        <hr>
+                        <div class="layui-row layui-font-16" style="display: flex;position: relative;margin-top: 20px">
+                            <span style="width: 80px">邮箱</span>
+                            <span th:text="${user.email}">2250671362@qq.com</span>
+                            <a class="myui-a-tag myui-font-color-gray layui-font-14" style="position: absolute;right: 15px">修改</a>
+                        </div>
+                        <hr>
+                        <div class="layui-row layui-font-16" style="display: flex;position: relative;margin-top: 20px">
+                            <span style="width: 80px">密码</span>
+                            <span>已设置</span>
+                            <a class="myui-a-tag myui-font-color-gray layui-font-14" lay-on="password-iframe-handle" style="position: absolute;right: 15px">修改</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-row" style="margin-top: 30px;margin-bottom: 20px;text-align: center;color: darkgrey" th:replace="_fragment::footer">
+        © 2024 Powered by Derek
+    </div>
+</body>
+</html>
+<!-- 请勿在项目正式环境中引用该 layui.js 地址 -->
+
+<script>
+    changePanel = function (id) {
+        $('#panel-container').children().each(function() {
+            if (!$(this).hasClass('myui-hide')) {
+                $(this).addClass('myui-hide')
+            }
+            console.log();
+        });
+        $('#' + id + '-panel').removeClass('myui-hide')
+        $('#profile-setting').removeClass('myui-active')
+        $('#account-setting').removeClass('myui-active')
+        $('#' + id + '-setting').addClass('myui-active')
+    }
+
+
+    $(document).ready(function () {
+        $('#user-avatar').on('click', function () {
+            $('#file-input').click();
+        })
+        $('#file-input').on('change', function() {
+            // 获取选中的文件列表
+            let files = this.files;
+            // 检查是否有文件被选中
+            if (files.length > 0) {
+                let loading = layer.msg('正在上传', {icon: 16, shade: 0.3, time: 0});
+                let file = files[0];
+                // 获取文件大小（以字节为单位）
+                let fileSize = file.size;
+                if (fileSize > 1024 * 1024 * 2) {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: '头像最大支持2MB！'
+                    });
+                    return;
+                }
+                // 上传图片
+                let formData = new FormData();
+                formData.append('image', file);
+                formData.append('name', file.name);
+                $.ajax({
+                    url: '/image/changeAvatar', // 上传到服务器的 URL
+                    type: 'POST',
+                    data: formData,
+                    contentType: false, // 不设置内容类型，让浏览器自动处理
+                    processData: false, // 不处理发送的数据，因为 FormData 已经处理了
+                    success: function(res) {
+                        layer.close(loading);
+                        // 请求成功时的回调函数
+                        if (res.code !== 200) {
+                            layer.open({
+                                title: '上传失败'
+                                ,content: res.msg
+                            });
+                        }
+                        else {
+                            window.location.reload();
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // 请求失败时的回调函数
+                        layer.close(loading);
+                        console.error('Error:', textStatus, errorThrown);
+                    }
+                });
+            } else {
+                // 没有文件被选中
+                console.log('没有文件被选中');
+            }
+        });
+
+        $('#my-form').submit(function (e) {
+            e.preventDefault();
+            $.post('/profile/update', $('#my-form').serialize(), function(res) {
+                if (res.code !== 200) {
+                    layer.open({
+                        title: '修改失败'
+                        ,content: res.msg
+                    });
+                }
+                else {
+                    layer.msg('修改成功！', {icon: 1}, function(){});
+                }
+            });
+        })
+
+        $('#signature-input').on('input', function (e) {
+            $('#signature-length').text(e.target.value.length)
+        })
+    })
+
+    layui.use(function(){
+        var $ = layui.$;
+        var layer = layui.layer;
+        var util = layui.util;
+        // 事件
+        util.on('lay-on', {
+            'password-iframe-handle': function(){
+                layer.open({
+                    title: '修改密码',
+                    type: 2,
+                    area: ['430px', '320px'],
+                    content: '/iframe/password',
+                    fixed: true, // 不固定
+                    btn: ['确认修改', '取消'],
+                    btnAlign: 'c',
+                    yes: function(index, layero){
+                        // 获取 iframe 的窗口对象
+                        let iframeWin =  window[layero.find('iframe')[0]['name']];
+                        let oldPassword = iframeWin.$('#oldPassword').val(); // 获得 iframe 中某个输入框元素
+                        let newPassword = iframeWin.$('#newPassword').val();
+                        let confirmPassword = iframeWin.$('#confirmPassword').val();
+                        // 显示获得的值
+                        $.post('/profile/password', {
+                            oldPassword: oldPassword,
+                            newPassword: newPassword,
+                            confirmPassword: confirmPassword
+                        }, function(res) {
+                            if (res.code !== 200) {
+                                layer.open({
+                                    title: '修改失败'
+                                    ,content: res.msg
+                                });
+                            }
+                            else {
+                                layer.confirm('修改成功！', {
+                                    btn: ['确定'] //按钮
+                                }, function(){
+                                    window.location.href = '/login/logout'
+                                })
+                            }
+                        });
+                    }
+                });
+            }
+        })
+    });
+</script>

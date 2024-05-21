@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragment::head('登录')">
+  <meta charset="UTF-8">
+  <title>登录</title>
+  <link href="../static/layui/layui.css" rel="stylesheet">
+  <link href="../static/css/myui.css" rel="stylesheet">
+  <!-- 请勿在项目正式环境中引用该 layui.js 地址 -->
+  <script src="../static/layui/layui.js"></script>
+  <script src="../static/jquery/jquery-3.7.1.min.js"></script>
+</head>
+<style>
+    .demo-login-container{width: 320px; margin: 21px auto 0;}
+    .demo-login-other .layui-icon{position: relative; display: inline-block; margin: 0 2px; top: 2px; font-size: 26px;}
+</style>
+<body th:style="'background-image: url(\'/avatars/background/bg_1.png\');'" style="background-image: url('https://file.mlog.club/images/2020/10/13/6e7933f5c9b2fe515210a17ea1762105.jpg');z-index: -1">
+
+<th:block th:replace="_fragment::navigate(${user}, 0)"></th:block>
+
+<div class="layui-card" style="position: absolute;padding: 20px;border-radius: 3px;left: 40%;top: 20%">
+    <div class="layui-row" style="display: flex;justify-content: center">
+        <span class="myui-nickname layui-font-22">KKBlog登录</span>
+    </div>
+    <div class="layui-row" style="display: flex;justify-content: center;margin-top: 10px">
+        <span class="myui-font-color-gray layui-font-14">
+            一个配置简单易上手的开源博客社区系统
+        </span>
+    </div>
+    <form class="layui-form" id="login-form">
+        <div class="demo-login-container">
+            <div class="layui-form-item">
+                <div class="layui-input-wrap">
+                    <div class="layui-input-prefix">
+                        <i class="layui-icon layui-icon-username"></i>
+                    </div>
+                    <input type="text" id="username" name="username" required value="" lay-verify="required" placeholder="用户名" lay-reqtext="请填写用户名" autocomplete="off" class="layui-input" lay-affix="clear">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-wrap">
+                    <div class="layui-input-prefix">
+                        <i class="layui-icon layui-icon-password"></i>
+                    </div>
+                    <input type="password" id="password" name="password" required value="" lay-verify="required" placeholder="密   码" lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-row">
+                    <div class="layui-col-xs7">
+                        <div class="layui-input-wrap">
+                            <div class="layui-input-prefix">
+                                <i class="layui-icon layui-icon-vercode"></i>
+                            </div>
+                            <input type="text" id="ver-code" name="captcha" required value="" lay-verify="required" placeholder="验证码" lay-reqtext="请填写验证码" autocomplete="off" class="layui-input" lay-affix="clear">
+                        </div>
+                    </div>
+                    <div class="layui-col-xs5">
+                        <div style="margin-left: 10px;">
+                            <img style="height: 38px!important;width: 100%;" src="https://www.oschina.net/action/user/captcha" id="image-code" onclick="getCode()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <input type="checkbox" name="remember" id="rememberMe" lay-skin="primary" title="记住登录状态">
+                <a href="#forget" style="float: right; margin-top: 7px;color: #0badef">忘记密码？</a>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" type="submit">登录</button>
+            </div>
+            <div class="layui-form-item demo-login-other">
+                还没有账号吗？点击此处
+              <a href="/register" style="color: #0badef">注册帐号</a>
+            </div>
+        </div>
+    </form>
+</div>
+<div style="position: absolute;bottom: 0">
+    <th:block th:replace="_fragment::footer"></th:block>
+</div>
+<script>
+    let key,code;
+    function getCode() {
+        $.get('/code/getCode', function (res) {
+            if(res.code === 200) {
+                key = res.data.key
+                $('#image-code').attr("src", res.data.code);
+                if (res.data.type === 1) {
+                    debugger
+                    $('#ver-code').val(res.data.value);
+                }
+            } else {
+                layer.open({
+                    title: '获取验证码失败！'
+                    ,content: res.msg
+                });
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        // 初始化验证码
+        getCode();
+        // 提交动作
+        $('#login-form').submit(function (e) {
+            e.preventDefault();
+            let rememberMe = $('#rememberMe').is(':checked');
+            let loading = layer.msg('正在登录', {icon: 16, shade: 0.3, time: 0});
+            $.post('/login/post?key=' + key + "&code=" + $('#ver-code').val(),
+                {   username: $('#username').val(),
+                    password: $('#password').val(),
+                    rememberMe: rememberMe}, function(res) {
+                    layer.close(loading);
+                    if (res.code !== 200) {
+                        layer.open({
+                            title: '登录失败'
+                            ,content: res.msg
+                        });
+                        getCode();
+                    }
+                    else {
+                        window.location.href = "/index";
+                    }
+                });
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragment::head('用户主页')">
+    <meta charset="UTF-8">
+    <title>个人主页</title>
+    <link href="../static/layui/layui.css" rel="stylesheet">
+    <link href="../static/css/myui.css" rel="stylesheet">
+    <!-- 请勿在项目正式环境中引用该 layui.js 地址 -->
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/jquery/jquery-3.7.1.min.js"></script>
+    <!--    <link href="../static/css/preview.css" rel="stylesheet">-->
+</head>
+
+<body>
+<ul class="layui-nav" style="background: rgb(47,54,60)" th:replace="_fragment::navigate(${user}, 0)">
+    <li class="layui-nav-item">
+        <a href="">带徽章<span class="layui-badge">9</span></a>
+    </li>
+    <li class="layui-nav-item">
+        <a href="">小圆点<span class="layui-badge-dot"></span></a>
+    </li>
+    <li class="layui-nav-item" lay-unselect>
+        <a href="javascript:;">
+            <img src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg" class="layui-nav-img">
+        </a>
+        <dl class="layui-nav-child">
+            <dd><a href="javascript:;">子级菜单</a></dd>
+            <dd><a href="javascript:;">横线隔断</a></dd>
+            <hr>
+            <dd style="text-align: center;"><a href="">退出</a></dd>
+        </dl>
+    </li>
+</ul>
+
+<div class="layui-container" style="margin-top: 10px">
+    <div class="layui-card myui-user-background"
+         th:style="'background-image: url(' + @{${userDto.backgroundImage}} + ');'"
+         style="background-image: url('https://file.mlog.club/images/2020/10/13/6e7933f5c9b2fe515210a17ea1762105.jpg');">
+        <div class="layui-row myui-user-nickname-panel">
+            <div class="layui-col-md6" style="margin-left: 130px;margin-top: 5px;width: 90%">
+                <div class="layui-row myui-nickname layui-font-16" style="color: black" th:text="${userDto.nickname}">
+                    小可的猫爬架
+                </div>
+                <div class="layui-row" style="margin-top: 5px" th:text="${userDto.signature}">
+                    这个人很懒，什么也没有留下。
+                </div>
+            </div>
+        </div>
+        <input type="file" class="myui-hide" accept="image/*" id="file-input">
+        <div class="myui-change-bg-btn" th:if="${userDto.me}" id="file-input-btn">
+            <i class="layui-icon layui-icon-set"></i> 更换背景图
+        </div>
+        <div style="position:absolute;right: 40px;bottom: 30px" class="myui-subscribe-btn"
+             th:id="${'follow-btn-a-' + userDto.id}" th:onclick="|followUser('a-', ${userDto.id})|"
+             th:classappend="${userDto.follow} ? 'active': ''" th:if="${!userDto.me}">
+            <i class="layui-icon" th:id="${'follow-icon-a-' + userDto.id}"
+               th:classappend="${userDto.follow} ? '': 'layui-icon-add-1'" th:text="${userDto.follow ? '已关注':'关注'}"
+               style="color: white">关注</i>
+        </div>
+        <div class="layui-row myui-user-avatar-container" style="">
+            <img class="myui-user-avatar" th:src="@{${userDto.avatar}}"
+                 src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+        </div>
+    </div>
+
+    <div class="layui-row layui-col-space12">
+        <div class="layui-col-md3">
+            <div class="layui-card" style="padding: 10px">
+                <div class="layui-row">
+                    <span class="myui-nickname" style="color: black">个人成就</span>
+                </div>
+                <hr>
+                <div class="layui-row">
+                    <div class="layui-col-md3 myui-layout-center">
+                        <div style="text-align: center">
+                            <div class="myui-font-color-deep-gray layui-font-12">积分</div>
+                            <span class="layui-font-14" style="font-weight: bold"
+                                  th:text="${userDto.scores}">2213</span>
+                        </div>
+                    </div>
+                    <div class="layui-col-md3 myui-layout-center">
+                        <div style="text-align: center">
+                            <div class="myui-font-color-deep-gray layui-font-12">话题</div>
+                            <span class="layui-font-14" style="font-weight: bold"
+                                  th:text="${userDto.dynamicNumber}">213</span>
+                        </div>
+                    </div>
+                    <div class="layui-col-md3 myui-layout-center">
+                        <div style="text-align: center">
+                            <div class="myui-font-color-deep-gray layui-font-12">评论</div>
+                            <span class="layui-font-14" style="font-weight: bold"
+                                  th:text="${userDto.commentNumber}">0</span>
+                        </div>
+                    </div>
+                    <div class="layui-col-md3 myui-layout-center">
+                        <div style="text-align: center">
+                            <div class="myui-font-color-deep-gray layui-font-12">排名</div>
+                            <span class="layui-font-14" style="font-weight: bold"
+                                  th:text="${userDto.registerRank}">1</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="layui-card" style="padding: 10px">
+                <div class="layui-row">
+                    <span class="myui-nickname" style="color: black">个人资料</span>
+                    <a class="layui-font-14 myui-a-tag" style="float: right;margin-right: 10px" th:href="@{/profile/me}"
+                       th:if="${userDto.me}">编辑资料</a>
+                </div>
+                <hr>
+                <div class="layui-row">
+                    <span>昵称</span>
+                    <span style="float: right;margin-right: 10px;width: 80%" th:text="${userDto.nickname}">小可小可小可小小可小可小可小小可小可小可小可小可</span>
+                </div>
+                <hr>
+                <div class="layui-row">
+                    <span>签名</span>
+                    <span style="float: right;margin-right: 10px;width: 80%" th:text="${userDto.signature}">这个人很烂什么也没有留个人很烂什么也没有留个人很烂什么也没有留下</span>
+                </div>
+                <hr>
+                <div class="layui-row">
+                    <span>友链</span>
+                    <a class="myui-a-tag" style="float: right;margin-right: 10px;width: 80%;overflow-x: hidden;"
+                       th:href="@{${userDto.link}}" target="_blank" th:text="${userDto.link}">小可小可小可小可小可</a>
+                </div>
+            </div>
+
+            <div class="layui-card" style="padding: 10px">
+                <div class="layui-row">
+                    <span class="myui-nickname" style="color: black">粉丝</span>
+                    <span class="myui-font-color-deep-gray" style="font-weight: bold;margin-left: 5px"
+                          th:text="${userDto.fanNumber}">110</span>
+                    <a class="layui-font-14 myui-a-tag" style="float: right;margin-right: 10px;"
+                       th:if="${#lists.size(fans) < userDto.fanNumber}">更多</a>
+                </div>
+                <hr>
+                <div class="layui-row">
+                    <div class="layui-row" style="margin-top: 8px" th:each="fan,stat:${fans}">
+                        <div class="layui-col-md2">
+                            <img class="myui-avatar-small" th:onclick="|window.location.href='/user/' + ${fan.id}|"
+                                 th:src="@{${fan.avatar}}" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+                        </div>
+                        <div class="layui-col-md6">
+                            <a class="layui-row myui-a-tag" th:href="@{${'/user/' + fan.id}}" th:text="${fan.nickname}">小可小可</a>
+                            <div class="layui-row layui-font-12" style="height: 18px;overflow-y: hidden"
+                                 th:text="${fan.signature}">人很烂什么也没有留个人很烂什么也没
+                            </div>
+                        </div>
+                        <div class="layui-col-md3">
+                            <div class="myui-subscribe-btn list" th:id="${'follow-btn-b-' + fan.id}"
+                                 th:onclick="|followUser('b-', ${fan.id})|"
+                                 th:classappend="${fan.follow ? 'active' : ''}">
+                                <i class="layui-icon" th:id="${'follow-icon-b-' + fan.id}"
+                                   th:classappend="${fan.follow ? '' : 'layui-icon-add-1'}" style="color: white"
+                                   th:text="${fan.follow ? '已关注' : '关注'}">关注</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-card" style="padding: 10px">
+                <div class="layui-row">
+                    <span class="myui-nickname" style="color: black">关注</span>
+                    <span class="myui-font-color-deep-gray" style="font-weight: bold;margin-left: 5px"
+                          th:text="${userDto.followNumber}">110</span>
+                    <a class="layui-font-14 myui-a-tag" style="float: right;margin-right: 10px;"
+                       th:if="${#lists.size(follows) < userDto.followNumber}">更多</a>
+                </div>
+                <hr>
+                <div class="layui-row">
+                    <div class="layui-row" style="margin-top: 8px" th:each="follow,stat:${follows}">
+                        <div class="layui-col-md2">
+                            <img class="myui-avatar-small" th:onclick="|window.location.href='/user/' + ${follow.id}|"
+                                 th:src="@{${follow.avatar}}" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+                        </div>
+                        <div class="layui-col-md6">
+                            <a class="layui-row myui-a-tag" th:href="@{${'/user/' + follow.id}}"
+                               th:text="${follow.nickname}">小可小可</a>
+                            <div class="layui-row layui-font-12" style="height: 18px;overflow-y: hidden"
+                                 th:text="${follow.signature}">人很烂什么也没有留个人很烂什么也没
+                            </div>
+                        </div>
+                        <div class="layui-col-md3">
+                            <div class="myui-subscribe-btn list" th:id="${'follow-btn-c-' + follow.id}"
+                                 th:onclick="|followUser('c-', ${follow.id})|"
+                                 th:classappend="${follow.follow ? 'active' : ''}">
+                                <i class="layui-icon" th:id="${'follow-icon-c-' + follow.id}"
+                                   th:classappend="${follow.follow ? '' : 'layui-icon-add-1'}"
+                                   th:text="${follow.follow ? '已关注' : '关注'}" style="color: white">已关注</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md9">
+            <div class="layui-card" style="padding: 10px">
+                <div class="layui-row">
+                    <a class="layui-font-18 myui-submenu  active" id="ta-dynamic-btn">Ta的动态</a>
+                    <a class="layui-font-18 myui-submenu" id="ta-article-btn">Ta的文章</a>
+                </div>
+                <hr>
+                <div class="layui-row" id="post-list">
+                    <th:block th:replace="_fragment::preDynamics(${dynamics})">456</th:block>
+                    <div class="layui-row" style="justify-content: center;display: flex" id="load-more-btn-area">
+                        <button th:classappend="${#lists.size(dynamics) < 5 ? 'myui-hide' : ''}" id="load-more-btn"
+                                class="layui-btn layui-btn-xs">点击加载更多
+                        </button>
+                        <button th:classappend="${#lists.size(dynamics) >= 5 ? 'myui-hide' : ''}" id="load-all"
+                                class="layui-btn layui-btn-xs layui-btn-primary">已经到底咯~
+                        </button>
+                    </div>
+
+                </div>
+                <hr>
+                <div class="layui-row " id="post-list-article">
+                    <th:block th:replace="_fragment::preArticles(${articles})">123</th:block>
+                    <div class="layui-row" style="justify-content: center;display: flex"
+                         id="articles-load-more-btn-area">
+                        <button th:classappend="${#lists.size(articles) < 5 ? 'myui-hide' : ''}"
+                                id="articles-load-more-btn" class="layui-btn layui-btn-xs">点击加载更多
+                        </button>
+                        <button th:classappend="${#lists.size(articles) >= 5 ? 'myui-hide' : ''}" id="articles-load-all"
+                                class="layui-btn layui-btn-xs layui-btn-primary">已经到底咯~
+                        </button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+</div>
+
+<div class="layui-row" style="margin-top: 30px;margin-bottom: 20px;text-align: center;color: darkgrey"
+     th:replace="_fragment::footer">
+    © 2024 Powered by Derek
+</div>
+</body>
+</html>
+
+<script th:inline="javascript">
+
+    let user = [[${user}]]
+    let dynamics = [[${dynamics}]]
+    let articles = [[${articles}]]
+    let userDto = [[${userDto}]]
+    let favorites = [[${favorites}]]
+
+    //上传
+    $(document).ready(function () {
+        $('#file-input-btn').on('click', function () {
+            $('#file-input').click();
+        })
+
+        $('#file-input').on('change', function () {
+            // 获取选中的文件列表
+            let files = this.files;
+            // 检查是否有文件被选中
+            if (files.length > 0) {
+                let loading = layer.msg('正在上传', {icon: 16, shade: 0.3, time: 0});
+                let file = files[0];
+                // 获取文件大小（以字节为单位）
+                let fileSize = file.size;
+                if (fileSize > 1024 * 1024 * 5) {
+                    layer.open({
+                        title: '系统提示'
+                        , content: '图片最大为5MB！'
+                    });
+                    return;
+                }
+                // 上传图片
+                let formData = new FormData();
+                formData.append('image', file);
+                formData.append('name', file.name);
+                $.ajax({
+                    url: '/image/changeBg', // 上传到服务器的 URL
+                    type: 'POST',
+                    data: formData,
+                    contentType: false, // 不设置内容类型，让浏览器自动处理
+                    processData: false, // 不处理发送的数据，因为 FormData 已经处理了
+                    success: function (res) {
+                        layer.close(loading);
+                        // 请求成功时的回调函数
+                        if (res.code !== 200) {
+                            layer.open({
+                                title: '上传失败'
+                                , content: res.msg
+                            });
+                        } else {
+                            window.location.reload();
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // 请求失败时的回调函数
+                        layer.close(loading);
+                        console.error('Error:', textStatus, errorThrown);
+                    }
+                });
+            } else {
+                // 没有文件被选中
+                console.log('没有文件被选中');
+            }
+        });
+    })
+    //收藏和个人主页切换
+
+    //关注
+    followUser = function (prefix, id) {
+        if (user == null) {
+            layer.open({
+                title: '系统提示'
+                , content: '请登陆后再操作'
+            });
+            return;
+        }
+        if ($('#follow-btn-' + prefix + id).hasClass('active')) {
+            // 取消关注
+            $.get('/follow/undoFollow?userId=' + id, function (res) {
+                if (res.code === 200) {
+                    layer.msg('取消关注成功！', {icon: 1}, function () {
+                    });
+                    $('#follow-btn-' + prefix + id).removeClass('active');
+                    $('#follow-icon-' + prefix + id).addClass('layui-icon-add-1').text('关注');
+                    // $('#follow-icon-' + id).text('已关注');
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        , content: res.msg
+                    });
+                }
+            });
+        } else {
+            $.get('/follow/doFollow?userId=' + id, function (res) {
+                if (res.code === 200) {
+                    layer.msg('关注成功！', {icon: 1}, function () {
+                    });
+                    $('#follow-btn-' + prefix + id).addClass('active');
+                    $('#follow-icon-' + prefix + id).removeClass('layui-icon-add-1').text('已关注');
+                    // $('#follow-icon-' + id).text('已关注');
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        , content: res.msg
+                    });
+                }
+            });
+        }
+    }
+    //动态点赞、取消点赞
+    let dynamicDoLikeOrUnlike = function (id) {
+        if (user === undefined || user === null) {
+            layer.open({
+                title: '系统提示'
+                , content: '请登录后进行操作'
+            });
+            return;
+        }
+        if ($('#like-gap-' + id).hasClass('active')) {
+            $.get('/dynamic/unlike?dynamicId=' + id, function (res) {
+                if (res.code === 200) {
+                    layer.msg('取消点赞成功！', {icon: 1}, function () {
+                    });
+                    $('#like-gap-' + id).removeClass('active')
+                    $('#like-number-' + id).text(Number($('#like-number-' + id).text()) - 1);
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        , content: res.msg
+                    });
+                }
+            });
+        } else {
+            $.get('/dynamic/like?dynamicId=' + id, function (res) {
+                if (res.code === 200) {
+                    layer.msg('点赞成功！', {icon: 1}, function () {
+                    });
+                    $('#like-gap-' + id).addClass('active')
+                    $('#like-number-' + id).text(Number($('#like-number-' + id).text()) + 1);
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        , content: res.msg
+                    });
+                }
+            });
+        }
+    }
+    //文章点赞、取消点赞
+    let articleDoLikeOrUnlike = function (id) {
+        if (user === undefined || user === null) {
+            layer.open({
+                title: '系统提示'
+                , content: '请登录后进行操作'
+            });
+            return;
+        }
+        if ($('#like-gap-' + id).hasClass('active')) {
+            $.get('/article/unlike?articleId=' + id, function (res) {
+                    if (res.code === 200) {
+                        layer.msg('取消点赞成功！', {icon: 1}, function () {
+                        });
+                        $('#like-gap-' + id).removeClass('active')
+                        $('#like-number-' + id).text(Number($('#like-number-' + id).text()) - 1);
+                    } else {
+                        layer.open({
+                            title: '系统提示'
+                            , content: res.msg
+                        });
+                    }
+                },
+            );
+        } else {
+            $.get('/article/like?articleId=' + id, function (res) {
+                if (res.code === 200) {
+                    layer.msg('点赞成功！', {icon: 1}, function () {
+                    });
+                    $('#like-gap-' + id).addClass('active')
+                    $('#like-number-' + id).text(Number($('#like-number-' + id).text()) + 1);
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        , content: res.msg
+                    });
+                }
+            });
+        }
+    }
+
+    //加载更多
+    $(document).ready(function () {
+        $('#load-more-btn').on('click', function () {
+            let dynamicId = dynamics[dynamics.length - 1].id
+            $.get('/user/more?dynamicId=' + dynamicId + "&userId=" + userDto.id, function (res) {
+                if (res.code === 200) {
+                    dynamics = res.data;
+                    let html = ""
+                    for (let i = 0; i < res.data.length; i++) {
+                        html += genDynamicHtml(res.data[i])
+                    }
+                    $('#load-more-btn-area').before(html)
+                    if (res.data.length < 8) {
+                        $('#load-more-btn').addClass('myui-hide')
+                        $('#load-all').removeClass('myui-hide')
+                    }
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        , content: res.msg
+                    });
+                }
+            });
+        })
+
+        $('#articles-load-more-btn').on('click', function () {
+            let articleId = articles[articles.length - 1].id
+            $.get('/user/articleMore?articleId=' + articleId + "&userId=" + userDto.id, function (res) {
+                if (res.code === 200) {
+                    articles = res.data;
+                    let html = ""
+                    for (let i = 0; i < res.data.length; i++) {
+                        html += genArticleHtml(res.data[i])
+                    }
+                    $('#articles-load-more-btn-area').before(html)
+                    if (res.data.length < 8) {
+                        $('#articles-load-more-btn').addClass('myui-hide')
+                        $('#articles-load-all').removeClass('myui-hide')
+                    }
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        , content: res.msg
+                    });
+                }
+            });
+        })
+    })
+    //Ta的动态和文章切换
+    $(document).ready(function () {
+        // 获取当前活动的按钮
+        var activeBtn = $('.myui-submenu.active');
+        if (activeBtn.attr('id') === 'ta-dynamic-btn') {
+            $('#post-list').show();
+            $('#post-list-article').hide();
+        } else if (activeBtn.attr('id') === 'ta-article-btn') {
+            $('#post-list').hide();
+            $('#post-list-article').show();
+        }
+
+        // 为按钮添加点击事件
+        $('.myui-submenu').on('click', function () {
+            // 移除所有按钮的active类
+            $('.myui-submenu').removeClass('active');
+            // 给当前点击的按钮添加active类
+            $(this).addClass('active');
+
+            if ($(this).attr('id') === 'ta-dynamic-btn') {
+                $('#post-list').show();
+                $('#post-list-article').hide();
+            } else if ($(this).attr('id') === 'ta-article-btn') {
+                $('#post-list').hide();
+                $('#post-list-article').show();
+            }
+        });
+    });
+    //更多动态的html
+    let genDynamicHtml = function (dynamic) {
+        let tile = dynamic.type === 0 ? '' : ("<a class='myui-card-titler' target='_blank' href='http://localhost:8080' onclick='window.open(\"/dynamic/" + dynamic.id + "\", \"_blank\")'>" + dynamic.title + "</a>");
+        let images = JSON.parse(dynamic.imageList);
+        let imageHtml = ""
+        if (images != null) {
+            for (let i = 0; i < images.length; i++) {
+                imageHtml += "<li class='myui-image-li' >" +
+                    "    <img class='myui-list-image' src='" + images[i] + "'>" +
+                    "</li>";
+            }
+        }
+        let liked = dynamic.liked ? "active" : "";
+        return "<div class='layui-card myui-card' th:each='dynamic : ${dynamics}'>" +
+            "                <div class='layui-card-body' style='width: 100%'>" +
+            "                    <div class='myui-card-header'>" +
+            "                        <span class='myui-nickname'>" + dynamic.nickname + "</span>" +
+            "                        <span class='myui-time-tip'>发布于 " + dynamic.createTime + "</span>" +
+            "                    </div>"
+            + tile +
+            "                    <div class='myui-card-content' onclick='window.open(\"/dynamic/ " + dynamic.id + "\", \"_blank\")'>"
+            + dynamic.preView +
+            "                    </div>" +
+            "                    <ul class='myui-image-ul layui-row'>"
+            + imageHtml +
+            "                    </ul>" +
+            "                    <div class='myui-card-footer'>" +
+            "                        <div class='myui-gap " + liked + "' id='like-gap-" + dynamic.id + "' onclick='dynamicDoLikeOrUnlike(" + dynamic.id + ")'>" +
+            "                            <i class='layui-icon layui-icon-praise'></i>&nbsp;点赞&nbsp;<span id='like-number-" + dynamic.id + "'>" +
+            dynamic.likeNumber + " </span>" +
+            "                        </div>" +
+            "                        <div  class='myui-gap'>" +
+            "                            <i class='layui-icon layui-icon-reply-fill'></i>&nbsp;评论&nbsp;<span th:text='${dynamic.commentNumber}'>" + dynamic.commentNumber + "</span>" +
+            "                        </div>" +
+            "                        <div  class='myui-gap'>" +
+            "                            <i class='layui-icon layui-icon-read'></i>&nbsp;浏览&nbsp;<span th:text='${dynamic.viewNumber}'>" + dynamic.viewNumber + "</span>" +
+            "                        </div>" +
+            "                        <div class='myui-topic-tip'>" + dynamic.topicName + "</div>" +
+            "                    </div>" +
+            "                </div>" +
+            "            </div>"
+    }
+    // 更多文章的html
+    let genArticleHtml = function (article) {
+        let tile = "<a class='myui-card-titler' target='_blank' href='http://localhost:8080' onclick='window.open(\"/article/" + article.id + "\", \"_blank\")'>" + article.title + "</a>";
+        // let covers = JSON.parse(article.cover);
+        // let coverHtml = ""
+        // if (covers != null) {
+        //     for (let i = 0; i < covers.length; i++) {
+        //         coverHtml += "<li class='myui-image-li' >" +
+        //             "    <img class='myui-list-image' src='" + covers[i] + "'>" +
+        //             "</li>";
+        //     }
+        // }
+        let liked = article.liked ? "active" : "";
+        return "<div class='layui-card myui-card' th:each='article : ${articles}'>" +
+            "                <div class='layui-card-body' style='width: 100%'>" +
+            "                    <div class='myui-card-header'>" +
+            "                        <span class='myui-nickname'>" + article.nickname + "</span>" +
+            "                        <span class='myui-time-tip'>发布于 " + article.createTime + "</span>" +
+            "                    </div>"
+            + tile +
+            "                    <div class='myui-card-content' onclick='window.open(\"/article/ " + article.id + "\", \"_blank\")'>"
+            + article.preview +
+            "                    </div>" +
+            "                    <ul class='myui-image-ul layui-row'>"
+            // + coverHtml +
+            +
+            "                    </ul>" +
+            "                    <div class='myui-card-footer'>" +
+            "                        <div class='myui-gap " + liked + "' id='like-gap-" + article.id + "' onclick='articleDoLikeOrUnlike(" + article.id + ")'>" +
+            "                            <i class='layui-icon layui-icon-praise'></i>&nbsp;点赞&nbsp;<span id='like-number-" + article.id + "'>" +
+            article.likeNumber + " </span>" +
+            "                        </div>" +
+            "                        <div  class='myui-gap'>" +
+            "                            <i class='layui-icon layui-icon-reply-fill'></i>&nbsp;评论&nbsp;<span th:text='${dynamic.commentNumber}'>" + article.commentNumber + "</span>" +
+            "                        </div>" +
+            "                        <div  class='myui-gap'>" +
+            "                            <i class='layui-icon layui-icon-read'></i>&nbsp;浏览&nbsp;<span th:text='${article.viewNumber}'>" + article.viewNumber + "</span>" +
+            "                        </div>" +
+            "                        <div class='myui-topic-tip'>" + article.topicName + "</div>" +
+            "                    </div>" +
+            "                </div>" +
+            "            </div>"
+
+
+    }
+
+
+
+</script>

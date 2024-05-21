@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragment::head('500')">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../static/layui/layui.css" rel="stylesheet">
+    <link href="../static/css/myui.css" rel="stylesheet">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        text-align: center;
+        /*padding-top: 50px;*/
+    }
+
+    h1 {
+        font-size: 48px;
+        color: #333;
+    }
+
+    p {
+        font-size: 18px;
+        color: #666;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #333;
+        color: #fff;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+
+    .button:hover {
+        background-color: #555;
+    }
+</style>
+<body>
+<ul class="layui-nav" style="background: rgb(47,54,60)" th:replace="_fragment::navigate(${user}, 0)">
+    <li class="layui-nav-item">
+        <a href="">带徽章<span class="layui-badge">9</span></a>
+    </li>
+    <li class="layui-nav-item">
+        <a href="">小圆点<span class="layui-badge-dot"></span></a>
+    </li>
+    <li class="layui-nav-item" lay-unselect>
+        <a href="javascript:;">
+            <img     class="layui-nav-img">
+        </a>
+        <dl class="layui-nav-child">
+            <dd><a href="javascript:;">子级菜单</a></dd>
+            <dd><a href="javascript:;">横线隔断</a></dd>
+            <hr>
+            <dd style="text-align: center;"><a href="">退出</a></dd>
+        </dl>
+    </li>
+</ul>
+<div class="layui-container" style="padding-top: 10%">
+    <h1>500</h1>
+    <p>您的请求出现异常。</p>
+    <p><a href="/" class="layui-btn" style="margin-top: 20px">返回首页</a></p>
+</div>
+</body>
+</html>

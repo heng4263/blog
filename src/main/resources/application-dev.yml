@@ -1,0 +1,58 @@
+server:
+  port: 8080 #默认8080
+  servlet:
+    encoding:
+      charset: utf-8
+kkBlog:
+  protocol: http # 协议
+  ip-address: localhost #系统运行的ip地址
+  cookie-expire: 31536000 # cookie过期时间
+  image-path: D:\data\ #图片保存路径
+  email-code: false #是否开启邮箱验证码
+  login-code: false #是否开启登录验证码
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+jwt:
+  secret: zwfhfc
+  expiration: 3153600000
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/kkblog?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        hbm2ddl:
+          import_files: classpath:initData.sql
+  thymeleaf:
+    cache: false
+    check-template: true
+    check-template-location: true
+    content-type: text/html
+    enabled: true
+    encoding: UTF-8
+    excluded-view-names:
+    mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+  mail:
+    host: smtp.qq.com # 发件服务器地址,不同邮件平台地址不同
+    port: 25 #常用邮件端口25、109、110、143、465、995、993、994 如果开启了SSL安全则使用对应的端口号，25为非加密端口号
+    username: 2670914429@qq.com #发送邮件的账号 188136109@qq.com
+    password: ibwytawbccwzecgf #发送邮件账号的授权码,这里的授权码不是验证码.需要到邮箱
+    default-encoding: utf-8 #设置编码
+    properties: # 设置邮件超时时间防止服务器阻塞
+      timeout: 5000
+      connection-timeout: 5000
+      write-timeout: 5000

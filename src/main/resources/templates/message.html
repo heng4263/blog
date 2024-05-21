@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改个人信息</title>
+    <!-- 请勿在项目正式环境中引用该 layui.css 地址 -->
+    <link href="../static/layui/layui.css" rel="stylesheet">
+    <link href="../static/css/myui.css" rel="stylesheet">
+    <link href="../static/css/preview.css" rel="stylesheet">
+</head>
+<body>
+    <ul class="layui-nav">
+        <li class="layui-nav-item">
+            <a href="">带徽章<span class="layui-badge">9</span></a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="">小圆点<span class="layui-badge-dot"></span></a>
+        </li>
+        <li class="layui-nav-item" lay-unselect>
+            <a href="javascript:;">
+                <img src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg" class="layui-nav-img">
+            </a>
+            <dl class="layui-nav-child">
+                <dd><a href="javascript:;">子级菜单</a></dd>
+                <dd><a href="javascript:;">横线隔断</a></dd>
+                <hr>
+                <dd style="text-align: center;"><a href="">退出</a></dd>
+            </dl>
+        </li>
+    </ul>
+
+    <div class="layui-container" style="margin-top: 15px">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md2">
+                <div class="layui-panel">
+                    <ul class="layui-menu" id="docDemoMenu1">
+                        <li lay-options="{id: 100}">
+                            <div class="myui-menu-body-title">
+                                <img class="myui-top-image" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+                                <span class="myui-topic-name">个人消息</span>
+                            </div>
+                        </li>
+                        <li lay-options="{id: 100}">
+                            <div class="myui-menu-body-title myui-active">
+                                <img class="myui-top-image" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+                                <span class="myui-topic-name">系统通知</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="layui-col-md10">
+                <div>
+                    <div style="width: 600px;height: 400px">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<!-- 请勿在项目正式环境中引用该 layui.js 地址 -->
+<script src="../static/layui/layui.js"></script>
+<script src="../static/jquery/jquery-3.7.1.min.js"></script>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragment::head('发话题')">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../static/layui/layui.css" rel="stylesheet">
+    <link href="../static/css/myui.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../static/extend/inputTags.css"/>
+    <link rel="stylesheet" type="text/css" href="../static/editormd/css/editormd.css"></link>
+</head>
+<body>
+    <div style="background: rgb(47,54,60)" class="layui-nav" th:replace="_fragment::navigate(${user}, 0)">
+        <div class="layui-container" style="display:flex;position: relative">
+            <div class="myui-logo-container">
+                <img style="width: 80%;height: 80%;border-radius: 5px" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+            </div>
+            <ul class="layui-nav" style="margin-left: -10px">
+                <li class="layui-nav-item">
+                    <a href="" class="layui-font-18" style="">话题</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="" class="layui-font-18">文章</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="" class="layui-font-18">Gitee</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="" class="layui-font-18">Github</a>
+                </li>
+            </ul>
+            <div style="position: absolute;right: 50px;margin-top: 10px">
+                <div style="display: flex">
+                    <button class="layui-btn" id="post-button" style="margin-right: 20px">
+                        <i class="layui-icon layui-icon-add-1"></i>
+                        发表</button>
+                    <a href="javascript:;" class="myui-font-color-gray" id="user-info">
+                        <img src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg" style="border-radius: 50%;width: 35px;height: 35px ">
+                        <span class="layui-font-14 myui-font-color-gray">小小可小可小可小可小可可</span>
+                        <i class="layui-icon layui-icon-down"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-container" style="margin-top: 15px">
+        <div class="layui-card" style="padding: 20px">
+            <div class="layui-row layui-font-30" style="font-weight: bold">
+                发帖子
+            </div>
+            <div class="layui-row" style="display: flex;margin-top: 20px" id="topics-container">
+                <div class="layui-font-14 myui-topic-selections" th:id="${'topic-' + topic.id}" th:onclick="|selectTopic('${topic.id}')|" th:each="topic : ${topics}">[[${topic.name}]]</div>
+            </div>
+
+            <div class="layui-row" style="margin-top: 20px">
+                <input id="dynamic-title" class="layui-input font" placeholder="请输入帖子标题" style="border-radius: 3px;">
+            </div>
+
+            <div class="layui-row" style="margin-top: 20px;border-radius: 3px;">
+                <div id="editormd-input" style="border-radius: 3px"></div>
+                <div class="layui-row" style="position: relative;display: flex;border-style: solid;border-color: #DDDDDD;border-width: 0 1px 1px 1px;margin-top: -15px;padding: 3px 5px">
+                    <div class="layui-font-12 myui-font-color-gray">
+                        <span>字数:</span>
+                        <span id="words-number">0</span>
+                    </div>
+                    <div style="position: absolute;right: 10px;display: flex;justify-content: center;">
+                        <label class="layui-font-12 myui-font-color-gray" style="margin-right: 5px">同步滚动</label>
+                        <input type="checkbox" id="synScroll" lay-skin="primary" checked>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="layui-row" style="margin-top: 15px;position: relative">
+                <div class="layui-input-block tags" style="display: flex">
+                    <div id="tag-div"></div>
+                    <input class="layui-input" type="text" id="tag-input" placeholder="回车生成标签" autocomplete="off"/>
+                </div>
+                <div class="myui-tag-select" style="position: absolute" id="tag-select">
+                    <section id="tag-select-div">
+                    </section>
+                </div>
+            </div>
+
+
+            <div class="layui-row" style="margin-top: 15px">
+                <button type="button" class="layui-btn" id="post-btn">发布动态</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-row" style="margin-top: 30px;margin-bottom: 20px;text-align: center;color: darkgrey" th:replace="_fragment::footer">
+        © 2024 Powered by Derek
+    </div>
+</body>
+</html>
+
+<div th:replace="_include::tag-input">
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/jquery/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="../static/extend/version.js"></script>
+    <script type="text/javascript" charset="utf8" src="../static/extend/inputTags.js"></script>
+    <script type="text/javascript" charset="utf8" src="../static/editormd/js/editormd.js"></script>
+</div>
+<!--markdown组件-->
+<th:block th:replace="_include::markdown-input"></th:block>
+<script>
+
+</script>
+
+<script id="tagTemplate" type="text/html">
+    {{#  layui.each(d.list, function(index, item){ }}
+    <span id="tag-{{index}}"><em>{{item}}</em><button type="button" class="close" onclick="deleteTag({{index}})">×</button></span>
+    {{#  }); }}
+    {{#  if(d.list.length === 0){ }}
+    {{#  } }}
+</script>
+
+<script id="tagSelectTemplate" type="text/html">
+    {{#  layui.each(d.list, function(index, item){ }}
+    <div class="myui-font-color-gray myui-tag-option" onclick="addTag('{{item.name}}')">
+        <span>{{item.name}}</span>
+        <div style="position: absolute;right: 20px">热度&nbsp;<span>{{item.quotedTimes}}</span></div>
+    </div>
+    {{#  }); }}
+    {{#  if(d.list.length === 0){ }}
+    {{#  } }}
+</script>
+
+<script type="text/javascript" th:inline="javascript">
+    String.prototype.myTrim = function() {
+        return this.replace(/^\s+|\s+$/g, '');
+    };
+    let user = [[${user}]]
+    let selectTopicId = '';
+    let tagList = {
+        'list': []
+    }
+    let tagSelectList = {
+        'list': []
+    }
+    let laytpl = layui.laytpl;
+    // 标签显示引擎
+    let getTplTag = tagTemplate.innerHTML, viewTag = document.getElementById('tag-div');
+    laytpl(getTplTag).render(tagList, function(html){viewTag.innerHTML = html;});
+    // 推荐标签显示引擎
+    let getTplTagSelect = tagSelectTemplate.innerHTML, viewTagSelect = document.getElementById('tag-select-div');
+    laytpl(getTplTagSelect).render(tagSelectList, function(html){viewTagSelect.innerHTML = html;});
+
+    let mdEditor;
+    let path = '../static/editormd/lib/';
+    <!--/*/ path = '/editormd/lib/' /*/-->;
+    $(function() {
+        mdEditor = editormd("editormd-input", {
+            width: "100%",
+            height: 400,
+            path : path,
+            // theme : "dark",
+            // previewTheme : "dark",
+            // editorTheme : "pastel-on-dark",
+            markdown : '',
+            codeFold : true,
+            //syncScrolling : false,
+            saveHTMLToTextarea : true,    // 保存 HTML 到 Textarea
+            searchReplace : true,
+            //watch : false,                // 关闭实时预览
+            htmlDecode : "style,script,iframe|on*",            // 开启 HTML 标签解析，为了安全性，默认不开启
+            //toolbar  : false,             //关闭工具栏
+            //previewCodeHighlight : false, // 关闭预览 HTML 的代码块高亮，默认开启
+            emoji : true,
+            taskList : true,
+            tocm            : true,         // Using [TOCM]
+            tex : true,                   // 开启科学公式TeX语言支持，默认关闭
+            flowChart : true,             // 开启流程图支持，默认关闭
+            sequenceDiagram : true,       // 开启时序/序列图支持，默认关闭,
+            //dialogLockScreen : false,   // 设置弹出层对话框不锁屏，全局通用，默认为true
+            //dialogShowMask : false,     // 设置弹出层对话框显示透明遮罩层，全局通用，默认为true
+            //dialogDraggable : false,    // 设置弹出层对话框不可拖动，全局通用，默认为true
+            //dialogMaskOpacity : 0.4,    // 设置透明遮罩层的透明度，全局通用，默认值为0.1
+            //dialogMaskBgColor : "#000", // 设置透明遮罩层的背景颜色，全局通用，默认为#fff
+            imageUpload : true,
+            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "/image/md/upload",
+            placeholder: '请按照markdown语法输入',
+            onload : function() {
+                console.log('onload', this);
+                //this.fullscreen();
+                //this.unwatch();
+                //this.watch().fullscreen();
+
+                //this.setMarkdown("#PHP");
+                //this.width("100%");
+                //this.height(480);
+                //this.resize("100%", 640);
+            },
+            onchange : function() {
+                $('#words-number').text(mdEditor.getMarkdown().length)},
+        });
+    });
+
+    $('#synScroll').on('click', function (e) {
+        mdEditor.config({
+            syncScrolling: e.target.checked
+        });
+    })
+
+    $(document).ready(function () {
+        $('#tag-input').on('keydown', function (e) {
+            if (e.keyCode  === 13 || e.which === 13) {
+                let val = e.target.value.myTrim()
+                if (val.length > 10) {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: '标签最长10个字'
+                    });
+                    return;
+                }
+                if (val === '' ) {
+                    return;
+                }
+                if(tagList["list"].length >= 5) {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: '最多支持5个标签'
+                    });
+                    return;
+                }
+                if (!tagList['list'].includes(val)) {
+                    tagList['list'].push(val)
+                    laytpl(getTplTag).render(tagList, function(html){viewTag.innerHTML = html;});
+                }
+                $('#tag-input').val('')
+            } else if(e.keyCode === 8 || e.which === 8) {
+                if ($('#tag-input').val() === '' && tagList['list'].length > 0) {
+                    tagList['list'].pop()
+                    laytpl(getTplTag).render(tagList, function(html){viewTag.innerHTML = html;});
+                }
+            }
+        })
+
+        $('#tag-input').on('input', function (e) {
+            getRecommendTags();
+        })
+
+        $('#tag-input').on('focus', function () {
+            getRecommendTags();
+            $('#tag-select').addClass('active')
+        })
+        let selectHover = false;
+        $("#tag-select").hover(
+            function(){selectHover = true;},
+            function(){selectHover = false;});
+        $('#tag-input').on('focusout', function () {
+            if (!selectHover) {
+                $('#tag-select').removeClass('active')
+            }
+        })
+
+    })
+
+    function addTag(tag) {
+        if(tagList["list"].length >= 5) {
+            layer.open({
+                title: '系统提示'
+                ,content: '最多支持5个标签'
+            });
+            return;
+        }
+        if (!tagList['list'].includes(tag)) {
+            tagList['list'].push(tag)
+            laytpl(getTplTag).render(tagList, function(html){viewTag.innerHTML = html;});
+            $('#tag-input').val('')
+            $('#tag-select').removeClass('active')
+        }
+    }
+
+    function deleteTag(index) {
+        $('#tag-' + index).remove();
+        tagList['list'].splice(index, 1);
+    }
+
+    function getRecommendTags() {
+        $.get('/tag/recommend?key=' + $('#tag-input').val(), function(res) {
+            if (res.code === 200) {
+                tagSelectList.list = res.data
+                laytpl(getTplTagSelect).render(tagSelectList, function(html){viewTagSelect.innerHTML = html;});
+            }
+        });
+    }
+
+    function selectTopic(index) {
+        let div = $('#topics-container');
+        let children = div.children();
+        children.each(function() {
+            $(this).removeClass('active')
+        });
+        $('#topic-' + index).addClass('active')
+        selectTopicId = index;
+    }
+
+
+    $('#post-btn').on('click',function () {
+        // 预览文字
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(mdEditor.getPreviewedHTML(), 'text/html');
+        let textContent = doc.body.textContent || "";
+        textContent = textContent.myTrim();
+        if (textContent === '') {
+            layer.open({
+                title: '系统提示！'
+                ,content: '请输入有效的内容！'
+            });
+            return
+        }
+        // 获取标题
+        let title = $('#dynamic-title').val().myTrim();
+        if (title === '') {
+            layer.open({
+                title: '系统提示！'
+                ,content: '请输入帖子标题'
+            });
+            return
+        }
+        if (selectTopicId === '') {
+            layer.open({
+                title: '系统提示！'
+                ,content: '请选择话题'
+            });
+            return
+        }
+        let loading = layer.msg('正在发布', {icon: 16, shade: 0.3, time: 0});
+        $.post('/dynamic/post',
+            {
+                topicId: selectTopicId,
+                type: 1,
+                title: title,
+                topicContent: mdEditor.getMarkdown(),
+                tags: JSON.stringify(tagList.list),
+                preView: textContent
+            },
+            function(res) {
+                layer.close(loading);
+                if (res.code !== 200) {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: res.msg
+                    });
+                }
+                else {
+                    $('#input-text').val('')
+                    layer.alert('发布成功！', {
+                        time: 3*1000,
+                        success: function(layero, index){
+                            let timeNum = this.time/1000, setText = function(start){
+                                layer.title('<span class="layui-font-red">'+ (start ? timeNum : --timeNum) + '</span> 秒后自动跳转', index);
+                            };
+                            setText(!0);
+                            this.timer = setInterval(setText, 1000);
+                            if(timeNum <= 0){
+                                clearInterval(this.timer);
+                                window.location.href = "/dynamic/" + res.data.id
+                            }
+                        },
+                        end: function(){
+                            clearInterval(this.timer);
+                            window.location.href = "/dynamic/" + res.data.id
+                        }
+                    });
+                }
+            });
+    });
+</script>

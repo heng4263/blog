@@ -1,0 +1,93 @@
+/*
+* @Author: layui-2
+* @Date:   2018-08-31 11:40:53
+* @Last Modified by:   hi916
+* @Last Modified time: 2021-04-15 15:52:12
+*/
+em{
+  font-style: normal;
+}
+.tags
+{
+    border: 1px solid #d5d5d5;
+    background-color: #fff;
+}
+
+.tags span{
+    /*font-size: 12px;*/
+    line-height: 16px;
+    position: relative;
+    display: inline-block;
+    height: 16px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+    padding: 4px 5px 5px 9px;
+    cursor: pointer;
+    transition: all .2s ease 0s;
+    vertical-align: baseline;
+    white-space: nowrap;
+    color: #000000;
+    font-weight: bolder;
+    /*background-color: #009688;*/
+    /*text-shadow: 1px 1px 1px rgba(0, 0, 0, .15);*/
+}
+.tags .close{
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 20px;
+    float: none;
+    width: 18px;
+    padding: 0;
+    cursor: pointer;
+    text-align: center;
+    opacity: 1;
+    color: #ea0000;
+    border:  0 none;
+    background: transparent none repeat scroll 0 0;
+    text-shadow: none;
+}
+.tags .close:hover{
+  background: #ffb800;
+}
+.tags [type='text'],
+.tags [type='text']:focus{
+    line-height: 25px;
+    display: inline;
+    width: 50%;
+    margin: 0;
+    padding: 0 6px;
+    border: 0 none;
+    outline: 0 none;
+    box-shadow: none;
+}
+
+.albtn{
+    line-height: 30px;
+    display: block;
+    width: 100px;
+    height: 30px;
+    margin: 0 auto;
+    cursor: pointer;
+    text-align: center;
+    color: #fff;
+    background: #ffb800;
+}
+
+.layui-input-block.tags{
+    padding: 3px 5px 3px 8px;
+    margin-left: 0!important;
+    border-radius: 3px;
+}
+.layui-input-block.tags span {
+    /*padding: 5px 10px 5px 10px;*/
+    height: 25px;
+    border-radius: 2px;
+    text-align: center;
+    background-color: #009688;
+    color: white;
+    margin-right: 8px;
+}
+.layui-input-block.tags button{
+    font-size: 20px;
+    color: white;
+}

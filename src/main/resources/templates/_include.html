@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--图片预览-->
+<div th:fragment="image-preview">
+    <link th:href="@{/css/preview.css}" rel="stylesheet">
+    <script th:src="@{/image_preview/pre.js}"></script>
+</div>
+
+<!--标签输入-->
+<div th:fragment="tag-input">
+    <link rel="stylesheet" type="text/css" th:href="@{/extend/inputTags.css}"/>
+    <script type="text/javascript" charset="utf8" th:src="@{/extend/version.js}"></script>
+<!--    <script type="text/javascript" charset="utf8" th:src="@{/extend/inputTags.js}"></script>-->
+</div>
+
+<!--markdown输入-->
+<div th:fragment="markdown-input">
+    <link rel="stylesheet" type="text/css" th:href="@{/editormd/css/editormd.css}"/>
+    <script type="text/javascript" charset="utf8" th:src="@{/editormd/js/editormd.js}"></script>
+</div>
+
+<!--markdown展示-->
+<div th:fragment="markdown-view">
+    <link rel="stylesheet" type="text/css" th:href="@{/editormd/css/editormd.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/editormd/css/editormd.preview.css}"/>
+    <script type="text/javascript" charset="utf8" th:src="@{/editormd/js/editormd.js}"></script>
+    <script type="text/javascript" charset="utf8" th:src="@{/editormd/lib/marked.min.js}"></script>
+    <script type="text/javascript" charset="utf8" th:src="@{/editormd/lib/prettify.min.js}"></script>
+    <script type="text/javascript" charset="utf8" th:src="@{/editormd/lib/flowchart.min.js}"></script>
+    <script type="text/javascript" charset="utf8" th:src="@{/editormd/lib/jquery.flowchart.min.js}"></script>
+    <script type="text/javascript" charset="utf8" th:src="@{/editormd/lib/raphael.min.js}"></script>
+    <script type="text/javascript" charset="utf8" th:src="@{/editormd/lib/underscore.min.js}"></script>
+    <script type="text/javascript" charset="utf8" th:src="@{/editormd/lib/sequence-diagram.min.js}"></script>
+</div>

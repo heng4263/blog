@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragment::head('详情')">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 请勿在项目正式环境中引用该 layui.css 地址 -->
+    <link href="../static/layui/layui.css" rel="stylesheet">
+    <link href="../static/css/myui.css" rel="stylesheet">
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/jquery/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<ul class="layui-nav" style="background: rgb(47,54,60)" th:replace="_fragment::navigate(${user}, 0)">
+    <li class="layui-nav-item">
+        <a href="">带徽章<span class="layui-badge">9</span></a>
+    </li>
+    <li class="layui-nav-item">
+        <a href="">小圆点<span class="layui-badge-dot"></span></a>
+    </li>
+    <li class="layui-nav-item" lay-unselect>
+        <a href="javascript:;">
+            <img     class="layui-nav-img">
+        </a>
+        <dl class="layui-nav-child">
+            <dd><a href="javascript:;">子级菜单</a></dd>
+            <dd><a href="javascript:;">横线隔断</a></dd>
+            <hr>
+            <dd style="text-align: center;"><a href="">退出</a></dd>
+        </dl>
+    </li>
+</ul>
+<div class="layui-container" style="margin-top: 15px">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md9">
+            <div class="layui-card"  style="padding: 10px 10px 15px 15px">
+                <div class="layui-row" style="display: flex;position: relative">
+                    <div >
+                        <img class="myui-avatar-middle" th:onclick="|window.location.href='/user/' + ${dynamic.userId}|" th:src="@{${dynamic.avatar}}"    >
+                    </div>
+                    <div style="margin-left: 15px;padding-top: 5px">
+                        <a class="layui-row myui-font-color-deep-gray myui-nickname myui-a-tag" th:href="${'/user/' + dynamic.userId}" th:text="${dynamic.nickname}">GoFly全栈开发</a>
+                        <div class="layui-row layui-font-12 myui-font-color-gray">
+                            <span th:text="${'发布于 ' + #dates.format(dynamic.createTime, 'yyyy-MM-dd HH:mm:ss')}">发布于 2023-12-23 10:16:45</span>&nbsp;&nbsp;&nbsp;
+                            <span th:text="${'IP属地 ' + dynamic.ipLocation}">IP属地广西省</span>
+                        </div>
+                    </div>
+                    <div style="position: absolute;right: 15px" th:if="${dynamic.userId==user.id}">
+                        <button class="layui-btn layui-btn-xs" id="manage-btn">
+                            <span>管理</span>
+                            <i class="layui-icon layui-icon-down layui-font-12"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-row" style="margin-top: 15px;padding-left: 10px;" th:if="${dynamic.type == 1}">
+                    <div class="layui-font-20" style="font-weight: bold" th:text="${dynamic.title}">这个是一个测试标题</div>
+                    <hr>
+                </div>
+                <div class="layui-row" style="margin-top: 15px">
+                    <div class="layui-row layui-font-16" style=" word-wrap: break-word;word-break:break-all;" th:if="${dynamic.type == 0}" th:text="${dynamic.dynamic}">
+                        go新手，这个gitee拉下来的源码怎么下载依赖
+                    </div>
+                    <div class="layui-row layui-font-16 " style="width: 95%" th:if="${dynamic.type == 1}" id="markdown-view-div">
+                        <textarea class="myui-hide" name="test-editormd-markdown-doc" th:text="${dynamic.topicContent}"></textarea>
+                    </div>
+                </div>
+                <div class="layui-row" id="image-list-container" style="margin-top: 10px">
+                    <ul class="myui-image-ul layui-row">
+                        <li class="myui-image-li-middle" th:each="image,stat : ${#thJson.parseStringArray(dynamic.imageList)}">
+                            <img class="myui-list-image" th:onclick="|layPhotos(${stat.index})|" th:src="${image}" src="https://picsum.photos/400">
+                        </li>
+                    </ul>
+                </div>
+                <div class="layui-row" style="margin-top: 10px">
+                    <div class="layui-row" style="display: flex">
+                        <span class="myui-circled-word layui-font-12 myui-background-color-light-gray myui-font-color-gray" style="margin-right: 20px" th:text="${dynamic.topicName}">开源</span>
+                        <th:block th:each="tag : ${#thJson.parseStringArray(dynamic.tags)}">
+                            <span class="myui-circled-word layui-font-12 myui-background-color-light-gray myui-font-color-gray" th:text="${'#' + tag}">#开撒但是是的武器大全源</span>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="layui-row" style="margin-top: 5px" id="like-user-avatars" th:classappend="${#lists.isEmpty(likes) ? 'myui-hide' : ''}">
+                    <div style="display: flex" id="like-user-avatars-container">
+                        <a th:each="person : ${likes}">
+                            <img class="myui-image-icon" style="margin-right: -5px" th:onclick="|window.location.href='/user/' + ${person.id}|" th:src="@{${person.avatar}}" src="https://picsum.photos/400">
+                        </a>
+                        <span style="line-height: 25px;margin-left: 15px" class="myui-font-color-gray" th:text="${'等' + dynamic.likeNumber + '人觉得很赞'}">23</span>
+                    </div>
+                </div>
+                <hr>
+                <div class="layui-row">
+                    <div class="layui-col-md4 myui-icon-press" id="dynamic-like-btn" th:onclick="|doDynamicLikeOrUnlike(${dynamic.id})|" th:classappend="${dynamic.liked ? 'active' : ''}" style="text-align: center">
+                        <i class="layui-icon layui-icon-praise layui-font-14"></i>&nbsp
+                        点赞(<span th:text="${dynamic.likeNumber}" id="dynamic-like-number">21</span>)
+                    </div>
+                    <div class="layui-col-md4" style="text-align: center">
+                        <i class="layui-icon layui-icon-read layui-font-14"></i>&nbsp
+                        浏览(<span th:text="${dynamic.viewNumber}">21</span>)
+                    </div>
+                    <div class="layui-col-md4 myui-icon-press" id="dynamic-star-btn" th:onclick="|doDynamicStarOrUnstar(${dynamic.id})|" th:classappend="${dynamic.stared ? 'active' : ''}" style="text-align: center">
+                        <i class="layui-icon layui-icon-star layui-font-14"></i>&nbsp
+                        收藏(<span th:text="${dynamic.starNumber}" id="dynamic-star-number">21</span>)
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-card"  style="padding: 10px 10px 15px 15px">
+                <div class="layui-row" style="display: flex;margin-left: 5px;position: relative">共
+                    <span th:text="${dynamic.commentNumber}" id="dynamic-comment-number">7</span>条评论
+                    <span style="position: absolute;right: 15px"><span id="parent-comment-words-number">0</span>/250</span>
+                </div>
+                <div class="layui-row">
+                    <div class="layui-row" style="margin-top: 10px">
+                        <label>
+                            <textarea placeholder="请输入评论内容" maxlength="250" class="layui-textarea" id="parent-comment-input"></textarea>
+                        </label>
+                    </div>
+                    <div class="layui-row" style="margin-top: 10px">
+                        <button type="submit" class="layui-btn" id="parent-comment-post-btn">发布</button>
+                        <button type="reset" class="layui-btn layui-btn-primary" id="parent-comment-reset-btn">重置</button>
+                    </div>
+                </div>
+                <!--                    评论区-->
+                <hr>
+                <div class="layui-row" style="margin-top: 20px;" id="comment-container">
+                    <th:block th:each="comment,stat: ${comments}">
+                        <div class="layui-row" style="display: flex;margin-top: 15px">
+                            <div style="width: 50px">
+                                <img class="myui-avatar" th:onclick="|window.location.href='/user/' + ${comment.userId}|" th:src="@{${comment.avatar}}" src="https://picsum.photos/200">
+                            </div>
+                            <div style="margin-left: 10px;width: 95%">
+                                <div class="layui-row">
+                                    <span class="myui-nickname" th:text="${comment.nickname}">derekerrr</span><span th:if="${dynamic.userId==comment.userId}" class="myui-author-tag">作者</span>
+                                    <span class="layui-font-14 myui-font-color-gray myui-comment-ip-location" th:text="${#dates.format(comment.createTime, 'yyyy-MM-dd HH:mm:ss')}">2023-12:21 21:21:12</span>
+                                    <span class="layui-font-14 myui-font-color-gray myui-comment-ip-location" th:text="${comment.ipLocation}"></span>
+                                </div>
+                                <div class="layui-row myui-comment-content" style="margin: 5px 0px 10px 0px;" th:text="${comment.content}">
+                                    go
+                                </div>
+                                <div class="layui-row layui-font-12 myui-font-color-gray" style="display: flex">
+                                    <div class="myui-icon-press" th:id="${'comment-like-number-container-' + comment.id}" th:classappend="${comment.liked ? 'active' : ''}" th:onclick="|doCommentLikeOrUnlike(${comment.id})|">
+                                        <i class="layui-icon layui-icon-praise">点赞(<span th:text="${comment.likeNumber}" th:id="${'comment-like-number-' + comment.id}">21</span>)</i>
+                                    </div>
+                                    &nbsp&nbsp&nbsp
+                                    <div class="myui-icon-press">
+                                        <i class="layui-icon layui-icon-reply-fill"  th:onclick="|openCommentArea(${comment.id})|">评论</i>
+                                    </div>
+                                </div>
+                                <div th:id="${'comment-area-' + comment.id}" id="comment-area-1"></div>
+                                <!--                            嵌套评论-->
+                                <div th:id="${'child-comment-container-' + comment.id}" class="layui-row myui-background-color-light-gray" style="border-radius: 3px;margin-top: 5px;">
+                                    <th:block th:each="child,stat:${comment.children}">
+                                        <div style="display: flex;padding: 5px">
+                                            <div style="width: 50px">
+                                                <img class="myui-avatar-small" th:onclick="|window.location.href='/user/' + ${child.userId}|" th:src="@{${child.avatar}}" src="https://picsum.photos/200">
+                                            </div>
+                                            <div style="margin-left: 10px;width: 95%">
+                                                <div class="layui-row">
+                                                    <a class="myui-other-user-nickname myui-a-tag" th:href="${'/user/' + child.userId}" th:text="${child.nickname}">derekerrr</a>
+                                                    <span th:if="${dynamic.userId==child.userId}" class="myui-author-tag">作者</span>
+                                                    <span>&nbsp;回复&nbsp;</span><a th:href="${'/user/' + child.replyUserId}" class="myui-other-user-nickname myui-a-tag" th:text="${child.replyUserNickname}">小猪</a>
+                                                    <span th:if="${dynamic.userId==child.replyUserId}" class="myui-author-tag">作者</span>
+                                                    <span class="layui-font-14 myui-font-color-gray myui-comment-ip-location"  th:text="${#dates.format(child.createTime, 'yyyy-MM-dd HH:mm:ss')}">2023-12:21 21:21:12</span>
+                                                    <span class="layui-font-14 myui-font-color-gray myui-comment-ip-location" th:text="${child.ipLocation}"></span>
+                                                </div>
+                                                <div class="layui-row myui-comment-content" style="margin: 5px 0 5px 0;" th:text="${child.content}">
+                                                    go run的时候，联网会自动下载的 run的时候，联网会自动下
+                                                </div>
+                                                <div class="layui-row" style="position: relative"><div class="myui-comment-reply-content" th:text="${child.replyContent}">回复内容</div></div>
+                                                <div class="layui-row layui-font-12 myui-font-color-gray" style="display: flex">
+                                                    <div class="myui-icon-press" th:id="${'comment-like-number-container-' + child.id}" th:classappend="${child.liked ? 'active' : ''}" th:onclick="|doCommentLikeOrUnlike(${child.id})|" >
+                                                        <i class="layui-icon layui-icon-praise">点赞(<span th:text="${child.likeNumber}" th:id="${'comment-like-number-' + child.id}">21</span>)</i>
+                                                    </div>
+                                                    &nbsp&nbsp&nbsp
+                                                    <div class="myui-icon-press" >
+                                                        <i class="layui-icon layui-icon-reply-fill" th:onclick="|openCommentArea(${child.id})|">回复</i>
+                                                    </div>
+                                                </div>
+                                                <div th:id="${'comment-area-' + child.id}" id="comment-area-2"></div>
+                                            </div>
+                                        </div>
+                                        <hr >
+                                    </th:block>
+                                    <div class="layui-row" style="justify-content: center;display: flex;padding-bottom: 5px" th:id="${'comment-load-more-' + comment.id}" th:classappend="${#lists.size(comment.children) < 8 ? 'myui-hide' : ''}">
+                                        <a th:onclick="|loadMoreChildComments(${stat.index})|"
+                                           th:id="${'comment-load-more-btn-' + comment.id}"
+                                           class="layui-font-12 myui-font-color-gray myui-pointer">点击加载更多子评论</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <hr>
+                    </th:block>
+                </div>
+                <div class="layui-row" style="justify-content: center;display: flex">
+                    <button th:classappend="${#lists.size(comments) < 8 ? 'myui-hide' : ''}" id="load-more-parent-comment-btn" class="layui-btn layui-btn-xs">点击加载更多</button>
+                    <button th:classappend="${#lists.size(comments) >= 8 ? 'myui-hide' : ''}" id="load-all" class="layui-btn layui-btn-xs layui-btn-primary">已经到底咯~</button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md3">
+            <div class="layui-card" style="padding: 10px">
+                <div class="layui-row myui-layout-center">
+                    <img class="myui-avatar-large" th:src="${userInfo.avatar}" th:onclick="|window.location.href='/user/' + ${dynamic.userId}|">
+                </div>
+                <a class="layui-row myui-layout-center myui-nickname myui-a-tag" style="color: #475ec5;margin-top: 10px" th:onclick="|window.location.href='/user/' + ${dynamic.userId}|">
+                    <span th:text="${userInfo.nickname}">小可的加</span>
+                </a>
+                <div class="layui-row myui-layout-center myui-font-color-deep-gray layui-font-12" style="margin-top: 10px">
+                    <span th:text="${userInfo.signature}">啊分为挖坟挖啊分挖坟我费瓦坟我费瓦</span>
+                </div>
+                <hr>
+                <div class="layui-row" style="margin-top: 10px">
+                    <div class="layui-col-md3 myui-layout-center">
+                        <div style="text-align: center">
+                            <div class="myui-font-color-deep-gray layui-font-12">积分</div>
+                            <span class="layui-font-14" style="font-weight: bold" th:text="${userInfo.scores}">2213</span>
+                        </div>
+                    </div>
+                    <div class="layui-col-md3 myui-layout-center">
+                        <div style="text-align: center">
+                            <div class="myui-font-color-deep-gray layui-font-12">话题</div>
+                            <span class="layui-font-14" style="font-weight: bold" th:text="${userInfo.dynamicNumber}">213</span>
+                        </div>
+                    </div>
+                    <div class="layui-col-md3 myui-layout-center">
+                        <div style="text-align: center">
+                            <div class="myui-font-color-deep-gray layui-font-12">评论</div>
+                            <span class="layui-font-14" style="font-weight: bold" th:text="${userInfo.commentNumber}">0</span>
+                        </div>
+                    </div>
+                    <div class="layui-col-md3 myui-layout-center">
+                        <div style="text-align: center">
+                            <div class="myui-font-color-deep-gray layui-font-12">排名</div>
+                            <span class="layui-font-14" style="font-weight: bold" th:text="${userInfo.registerRank}">1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="layui-row" style="margin-top: 30px;margin-bottom: 20px;text-align: center;color: darkgrey" th:replace="_fragment::footer">
+    © 2024 Powered by Derek
+</div>
+
+</body>
+</html>
+
+<!--markdown组件-->
+<th:block th:replace="_include::markdown-view"></th:block>
+
+<script th:inline="javascript">
+    let imageList = [[${#thJson.parseStringArray(dynamic.imageList)}]]
+    let data = [];
+    imageList.forEach(image => {
+        data.push({
+            src: image
+        })
+    })
+    function layPhotos(index){
+        layer.photos({
+            photos: {
+                "title": "图片",
+                "start": index,
+                "data": data
+            }
+        });
+    }
+</script>
+
+<script th:inline="javascript">
+    let user = [[${user}]]
+    let comments = [[${comments}]]
+    let dynamic = [[${dynamic}]]
+
+    String.prototype.myTrim = function() {
+        return this.replace(/^\s+|\s+$/g, '');
+    };
+
+    let commentArea = " <div class= 'layui-row '> " +
+        "<div style='display: flex;position: relative'><span class='myui-font-color-gray' style='position: absolute;right: 10px'><span id='child-comment-words-number'>0</span>/250</span></div>" +
+        "                  <div class= 'layui-row ' style= 'margin-top: 15px '> " +
+        "                      <textarea placeholder= '请输入回复内容 ' id='child-comment-input' oninput='childCommentInput()' maxlength='250' class= 'layui-textarea '></textarea> " +
+        "                  </div> " +
+        "                  <div class= 'layui-row ' style= 'margin-top: 10px '> " +
+        "                      <button onclick='postChildComment()' class= 'layui-btn ' >发布</button> " +
+        "                      <button onclick='cancelChildComment()' class= 'layui-btn layui-btn-primary '>取消</button> " +
+        "                  </div> " +
+        "              </div>"
+    let openedId = -1;
+    let selectCommendId = -1;
+    openCommentArea = function (id) {
+        selectCommendId = id;
+        if (openedId !== -1 && openedId !== id) {
+            $('#comment-area-' + openedId).html('')
+        }
+        let tag = $('#comment-area-' + id);
+        if (tag.html().length === 0) {
+            openedId = id;
+            tag.html(commentArea)
+        } else {
+            openedId = -1;
+            tag.html('')
+        }
+    }
+    childCommentInput = function () {
+        $("#child-comment-words-number").text($('#child-comment-input').val().length)
+    }
+    postChildComment = function () {
+        let content = $('#child-comment-input').val().myTrim();
+        if (content === '') {
+            layer.msg('请输入回复内容', {icon: 0}, function(){});
+            return;
+        }
+        let loading = layer.msg('正在发布', {icon: 16, shade: 0.3, time: 0});
+        $.post('/dynamic/comment/post',
+            {
+                parentId: selectCommendId,
+                dynamicId: [[${dynamic.id}]],
+                content: content
+            },
+            function(res) {
+                layer.close(loading);
+                if (res.code !== 200) {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: res.msg
+                    });
+                }
+                else {
+                    $("#child-comment-words-number").text('0');
+                    $('#child-comment-input').val('')
+                    $('#child-comment-container-' + res.data.parentId).prepend(genChildComment(res.data))
+                    $('#dynamic-comment-number').text(Number($('#dynamic-comment-number').text()) + 1)
+                    layer.msg('回复成功', {icon: 1}, function(){});
+                }
+            });
+    }
+    cancelChildComment = function () {
+        $('#comment-area-' + openedId).html('')
+    }
+
+    // 绑定监听事件
+    $(document).ready(function () {
+        $('#parent-comment-input').on('input', function (e) {
+            $('#parent-comment-words-number').text(e.target.value.length)
+        })
+        $('#parent-comment-reset-btn').on('click', function () {
+            $('#parent-comment-input').val('')
+            $('#parent-comment-words-number').text(0)
+        })
+        $('#parent-comment-post-btn').on('click', function () {
+            let content = $('#parent-comment-input').val().myTrim();
+            if (content === '') {
+                layer.msg('请输入评论内容', {icon: 0}, function(){});
+                return;
+            }
+            let loading = layer.msg('正在发布', {icon: 16, shade: 0.3, time: 0});
+            $.post('/dynamic/comment/post',
+                {
+                    parentId: -1,
+                    dynamicId: [[${dynamic.id}]],
+                    content: content
+                },
+                function(res) {
+                    layer.close(loading);
+                    if (res.code !== 200) {
+                        layer.open({
+                            title: '系统提示'
+                            ,content: res.msg
+                        });
+                    }
+                    else {
+                        $('#parent-comment-reset-btn').click();
+                        $('#comment-container').prepend(genParentComment(res.data))
+                        layer.msg('评论成功', {icon: 1}, function(){});
+                        $('#dynamic-comment-number').text(Number($('#dynamic-comment-number').text()) + 1)
+                    }
+                });
+        })
+
+        $('#load-more-parent-comment-btn').on('click', function () {
+            $.get('/dynamic/comment/more?dynamicId=' + [[${dynamic.id}]] + "&commentId=" + comments[comments.length - 1].id, function(res) {
+                if (res.code === 200){
+                    $('#comment-container').append(genCommentsHtml(res.data))
+                    comments = comments.concat(res.data)
+                    if (res.data.length < 8) {
+                        $('#load-more-parent-comment-btn').addClass('myui-hide')
+                        $('#load-all').removeClass('myui-hide')
+                    }
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: res.msg
+                    });
+                }
+            });
+        })
+    })
+
+    function genCommentsHtml(comments) {
+        let html = "";
+        for (let i = 0; i < comments.length; i ++) {
+            html += genParentComment(comments[i], i)
+        }
+        return html;
+    }
+
+    function genParentComment(comment, index) {
+        let childHtml = "";
+        let children = comment.children;
+        if (children != null) {
+            for(let i = 0; i < children.length; i++) {
+                childHtml += genChildComment(children[i])
+            }
+        }
+        let myHide = children == null || children.length < 8 ? 'myui-hide' : '';
+        childHtml += " <div class=\"layui-row " + myHide + "\" style=\"justify-content: center;display: flex;padding-bottom: 5px\" id=\"comment-load-more-" + comment.id + "\" >" +
+                     "    <a onclick=\"loadMoreChildComments(" + (comments.length + index) + ")\"" +
+                     "       id=\"comment-load-more-btn-" + comment.id + "\"" +
+                     "       class=\"layui-font-12 myui-font-color-gray myui-pointer\">点击加载更多子评论</a>" +
+                     "</div>";
+        let liked = comment.liked ? 'active': '';
+        let authorTag = comment.userId == dynamic.userId ? "<span class='myui-author-tag'>作者</span>" : '';
+        return  "<div class= 'layui-row ' style= 'display: flex;margin-top: 15px '> " +
+            "    <div style= 'width: 50px '> " +
+            "        <img onclick='window.location.href=\"/user/" + comment.userId + "\"' class= 'myui-avatar ' src=" + comment.avatar + " '> " +
+            "    </div> " +
+            "    <div style= 'margin-left: 10px;width: 95% '> " +
+            "        <div class= 'layui-row '> " +
+            "            <a class='myui-nickname myui-a-tag' href='/user/" + comment.userId + "'>" + comment.nickname + "</a> " +
+            authorTag +
+            "            <span class= 'layui-font-14 myui-font-color-gray myui-comment-ip-location'>" + comment.createTime + "</span> " +
+            "            <span class='layui-font-14 myui-font-color-gray myui-comment-ip-location'>" + comment.ipLocation + "</span>" +
+            "        </div> " +
+            "        <div class= 'layui-row myui-comment-content ' style= 'margin: 5px 0 10px 0; '>"
+                        + comment.content +
+            "        </div> " +
+            "        <div class= 'layui-row layui-font-12 myui-font-color-gray ' style= 'display: flex '> " +
+            "            <div class='myui-icon-press " + liked + "' id='comment-like-number-container-" + comment.id + "' onclick=\"doCommentLikeOrUnlike(" + comment.id + ")\"> " +
+            "                <i class= 'layui-icon layui-icon-praise '>点赞(<span id='comment-like-number-" + comment.id + "'>" + comment.likeNumber + "</span>)</i> " +
+            "            </div> " +
+            "            &nbsp&nbsp&nbsp " +
+            "            <div class= 'myui-icon-press '> " +
+            "                <i class= 'layui-icon layui-icon-reply-fill '  onclick='openCommentArea(" + comment.id + ")'>评论</i> " +
+            "            </div> " +
+            "        </div> " +
+            "        <div id='comment-area-" + comment.id + "'></div> " +
+            "        <!--                            嵌套评论--> " +
+            "        <div id='child-comment-container-" + comment.id + "' class= 'layui-row myui-background-color-light-gray ' style= 'border-radius: 3px;margin-top: 5px; '> "
+                        + childHtml +
+            "        </div> " +
+            "    </div> " +
+            "</div> " +
+            "<hr>"
+    }
+    
+    function genChildComment(comment) {
+        let liked = comment.liked ? 'active': '';
+        let authorTag1 = comment.userId == dynamic.userId ? "<span class='myui-author-tag'>作者</span>" : '';
+        let authorTag2 = comment.replyUserId == dynamic.userId ? "<span class='myui-author-tag'>作者</span>" : '';
+        return " <div style= 'display: flex;padding: 5px '> " +
+                   "    <div style= 'width: 50px '> " +
+                   "        <img onclick='window.location.href=\"/user/" + comment.userId + "\"' class= 'myui-avatar-small ' src= '" + comment.avatar + "'> " +
+                   "    </div> " +
+                   "    <div style= 'margin-left: 10px;width: 95% '> " +
+                   "        <div class= 'layui-row '> " +
+                   "            <a class='myui-other-user-nickname myui-a-tag' href='/user/" + comment.userId + "'>" + comment.nickname + "</a>" + authorTag1 + "<span>&nbsp;回复&nbsp;</span><a href='/user/" + comment.replyUserId + "' class='myui-other-user-nickname myui-a-tag'>" + comment.replyUserNickname + "</a> " +
+                    authorTag2 +
+                   "            <span class= 'layui-font-14 myui-font-color-gray myui-comment-ip-location'>" + comment.createTime + "</span> " +
+                   "            <span class='layui-font-14 myui-font-color-gray myui-comment-ip-location'>" + comment.ipLocation + "</span>" +
+                   "        </div> " +
+                   "        <div class= 'layui-row myui-comment-content ' style= 'margin: 5px 0 5px 0; ' th:text= '${child.content} '>"
+                    + comment.content +
+                   "        </div> " +
+                    "<div class='layui-row' style='position: relative'><div class='myui-comment-reply-content'>" + comment.replyContent + "</div></div>" +
+                   "        <div class= 'layui-row layui-font-12 myui-font-color-gray ' style= 'display: flex '> " +
+                   "            <div class='myui-icon-press " + liked + "' id='comment-like-number-container-" + comment.id + "' onclick=\"doCommentLikeOrUnlike(" + comment.id + ")\"> " +
+                   "                <i class= 'layui-icon layui-icon-praise '>点赞(<span id='comment-like-number-" + comment.id + "'>" + comment.likeNumber + "</span>)</i> " +
+                   "            </div> " +
+                   "            &nbsp&nbsp&nbsp " +
+                   "            <div class= 'myui-icon-press ' > " +
+                   "                <i class= 'layui-icon layui-icon-reply-fill' onclick='openCommentArea(" + comment.id + ")'>回复</i> " +
+                   "            </div> " +
+                   "        </div> " +
+                   "        <div id='comment-area-" + comment.id + "'></div> " +
+                   "    </div> " +
+                   "</div> " +
+                   "<hr >"
+    }
+
+    // 点赞、取消点赞
+    let doDynamicLikeOrUnlike = function (id) {
+        if (user === undefined || user === null) {
+            layer.open({
+                title: '系统提示'
+                ,content: '请登录后进行操作'
+            });
+            return;
+        }
+        if($('#dynamic-like-btn').hasClass('active')) {
+            $.get('/dynamic/unlike?dynamicId=' + id, function(res) {
+                if (res.code === 200){
+                    layer.msg('取消点赞成功！', {icon: 1}, function(){});
+                    $('#dynamic-like-btn').removeClass('active')
+                    $('#dynamic-like-number').text(Number($('#dynamic-like-number').text()) - 1);
+                    reloadLikeUserAvatars(res);
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: res.msg
+                    });
+                }
+            });
+        } else {
+            $.get('/dynamic/like?dynamicId=' + id, function(res) {
+                if (res.code === 200) {
+                    layer.msg('点赞成功！', {icon: 1}, function(){});
+                    $('#dynamic-like-btn').addClass('active')
+                    $('#dynamic-like-number').text(Number($('#dynamic-like-number').text()) + 1);
+                    reloadLikeUserAvatars(res);
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: res.msg
+                    });
+                }
+            });
+        }
+
+
+    }
+
+    //收藏、取消收藏
+    let doDynamicStarOrUnstar = function (id) {
+        if (user === undefined || user === null) {
+            layer.open({
+                title: '系统提示'
+                ,content: '请登录后进行操作'
+            });
+            return;
+        }
+        if($('#dynamic-star-btn').hasClass('active')) {
+            $.get('/dynamic/unstar?dynamicId=' + id, function(res) {
+                if (res.code === 200){
+                    layer.msg('取消收藏成功！', {icon: 1}, function(){});
+                    $('#dynamic-star-btn').removeClass('active')
+                    $('#dynamic-star-number').text(Number($('#dynamic-star-number').text()) - 1);
+                    // reloadLikeUserAvatars(res);
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: res.msg
+                    });
+                }
+            });
+        } else {
+            $.get('/dynamic/star?dynamicId=' + id, function(res) {
+                if (res.code === 200) {
+                    layer.msg('收藏成功！', {icon: 1}, function(){});
+                    $('#dynamic-star-btn').addClass('active')
+                    $('#dynamic-star-number').text(Number($('#dynamic-star-number').text()) + 1);
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: res.msg
+                    });
+                }
+            });
+        }
+
+    }
+
+    // 重新显示点赞人数头像
+    reloadLikeUserAvatars = function (res) {
+        if (Number(res.msg) <= 0 && $('#like-user-avatars').hasClass('myui-hide') === false) {
+            $('#like-user-avatars').addClass('myui-hide')
+        } else if (Number(res.msg) > 0 && $('#like-user-avatars').hasClass('myui-hide')) {
+            $('#like-user-avatars').removeClass('myui-hide')
+        }
+        let html = ""
+        for(let i = 0; i < res.data.length; i++) {
+            html += " <a >" +
+                    "    <img onclick='window.location.href=\"/user/" + res.data[i].id + "\"' class=\"myui-image-icon\" style=\"margin-right: -5px\" src=\"" + res.data[i].avatar + "\">" +
+                    "</a>"
+        }
+        html += "<span style=\"line-height: 25px;margin-left: 15px\" class=\"myui-font-color-gray\">等人" + res.msg + "觉得很赞</span>"
+        $('#like-user-avatars-container').html(html)
+    }
+
+    // 加载子评论
+    loadMoreChildComments = function (index) {
+        let children = comments[index].children
+        let lastCommentId = children[children.length - 1].id
+        $.get('/dynamic/comment/more?dynamicId=' + [[${dynamic.id}]] + '&commentId=' + lastCommentId, function(res) {
+            if (res.code === 200){
+                comments[index].children = comments[index].children.concat(res.data)
+                let html = ""
+                for(let i = 0; i < res.data.length; i++) {
+                    html += genChildComment(res.data[i])
+                }
+                $('#comment-load-more-' + comments[index].id).before(html)
+                if (res.data.length < 8) {
+                    $('#comment-load-more-' + comments[index].id).addClass('myui-hide')
+                }
+            } else {
+                layer.open({
+                    title: '系统提示'
+                    ,content: res.msg
+                });
+            }
+        });
+    }
+
+
+    // 点赞评论
+    let doCommentLikeOrUnlike = function (id) {
+        if (user === undefined || user === null) {
+            layer.open({
+                title: '系统提示'
+                ,content: '请登录后进行操作'
+            });
+            return;
+        }
+        if($('#comment-like-number-container-' + id).hasClass('active')) {
+            $.get('/dynamic/comment/unlike?commentId=' + id, function(res) {
+                if (res.code === 200){
+                    layer.msg('取消点赞评论成功！', {icon: 1}, function(){});
+                    $('#comment-like-number-container-' + id).removeClass('active')
+                    $('#comment-like-number-' + id).text(res.data.likeNumber);
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: res.msg
+                    });
+                }
+            });
+        } else {
+            $.get('/dynamic/comment/like?commentId=' + id, function(res) {
+                if (res.code === 200) {
+                    layer.msg('点赞评论成功！', {icon: 1}, function(){});
+                    $('#comment-like-number-container-' + id).addClass('active')
+                    $('#comment-like-number-' + id).text(res.data.likeNumber);
+                } else {
+                    layer.open({
+                        title: '系统提示'
+                        ,content: res.msg
+                    });
+                }
+            });
+        }
+    }
+
+    // 显示markdown
+    let mdView;
+    if (dynamic.type === 1) {
+        mdView = editormd.markdownToHTML("markdown-view-div", {
+            htmlDecode: "style,script,iframe",  // you can filter tags decode
+            tocm: true,    // Using [TOCM]
+            // tocContainer: "#markdown-view-div", // 自定义 ToC 容器层
+            emoji: true,
+            taskList: true,
+            tex: true,  // 默认不解析
+            flowChart: true,  // 默认不解析
+            sequenceDiagram: true,  // 默认不解析
+        });
+    }
+
+    $(document).ready(function () {
+        layui.use(function(){
+            let dropdown = layui.dropdown;
+            // 渲染
+            dropdown.render({
+                elem: '#manage-btn',
+                data: [{
+                    title: '编辑',
+                    id: 100,
+                    href: '/edit/create?id=' + dynamic.id
+                },{
+                    title: '删除',
+                    id: 101
+                }],
+                click: function(obj){
+                    if (obj.id === 101) {
+                        layer.confirm('是否删除该动态？', {
+                            btn: ['确定', '取消'] //按钮
+                        }, function(){
+                            $.get('/dynamic/delete?id=' + dynamic.id, function(res) {
+                                if (res.code === 200) {
+                                    layer.alert('删除成功！', {
+                                        time: 3*1000,
+                                        success: function(layero, index){
+                                            let timeNum = this.time/1000, setText = function(start){
+                                                layer.title('<span class="layui-font-red">'+ (start ? timeNum : --timeNum) + '</span> 秒后自动跳转到用户主页', index);
+                                            };
+                                            setText(!0);
+                                            this.timer = setInterval(setText, 1000);
+                                            if(timeNum <= 0){
+                                                clearInterval(this.timer);
+                                                window.location.href = "/user/me"
+                                            }
+                                        },
+                                        end: function(){
+                                            clearInterval(this.timer);
+                                            window.location.reload()
+                                        }
+                                    });
+                                } else {
+                                    layer.open({
+                                        title: '系统提示'
+                                        ,content: res.msg
+                                    });
+                                }
+                            });
+                        }, function(){});
+                    }
+                }
+            });
+        })
+    })
+</script>
