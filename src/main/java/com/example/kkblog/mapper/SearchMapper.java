@@ -60,6 +60,6 @@ public interface SearchMapper {
             "OR tags LIKE CONCAT('%', #{keyword}, '%') " +
             "OR preview LIKE CONCAT('%', #{keyword}, '%') " +
             "ORDER BY create_time DESC")
-    List<SearchDto> search(@Param("keyword") String keyword);
+    List<Search> search(@Param("keyword") String keyword);
 
 }

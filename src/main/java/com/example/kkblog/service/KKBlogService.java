@@ -136,7 +136,7 @@ public class KKBlogService {
     }
 
     //用户搜索功能
-    public List<SearchDto> search(String searchTerm) {
-        return searchMapper.search(searchTerm);
+    public List<Search> search(String keyword) {
+        return searchMapper.search(keyword);
     }
 }

@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="_fragment::head('话题')">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragment::head('搜索')">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>话题</title>
+    <title>搜索</title>
     <!-- 请勿在项目正式环境中引用该 layui.css 地址 -->
     <link href="../static/layui/layui.css" rel="stylesheet">
     <link href="../static/css/myui.css" rel="stylesheet">
     <link href="../static/css/preview.css" rel="stylesheet">
 </head>
 <body>
-<div style="background: rgb(47,54,60)" th:replace="_fragment::navigate(${user}, 1)">
+
+<div style="background: rgb(47,54,60)" th:replace="_fragment::navigate(${user}, 2)">
     <div class="layui-container" style="display:flex;position: relative">
         <div class="myui-logo-container">
             <img style="width: 80%;height: 80%;border-radius: 5px" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
@@ -47,91 +48,43 @@
     </div>
 </div>
 
+
 <div class="layui-container" style="margin-top: 10px;">
     <div class="layui-row layui-col-space10">
-        <div class="layui-col-md2">
-            <div class="layui-panel">
-                <ul class="layui-menu" id="docDemoMenu1" th:replace="_fragment::topic(${topics})">
-                    <li lay-options="{id: 100}">
-                        <div class="myui-menu-body-title">
-                            <img class="myui-top-image" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
-                            <span class="myui-topic-name">最新</span>
-                        </div>
-                    </li>
-                    <li lay-options="{id: 100}">
-                        <div class="myui-menu-body-title myui-active">
-                            <img class="myui-top-image" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
-                            <span class="myui-topic-name">推荐</span>
-                        </div>
-                    </li>
-                    <li lay-options="{id: 100}">
-                        <div class="myui-menu-body-title">
-                            <img class="myui-top-image" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
-                            <span class="myui-topic-name">最新</span>
-                        </div>
-                    </li>
-                    <li lay-options="{id: 100}">
-                        <div class="myui-menu-body-title">
-                            <img class="myui-top-image" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
-                            <span class="myui-topic-name">最新</span>
-                        </div>
-                    </li>
-                    <li lay-options="{id: 100}">
-                        <div class="myui-menu-body-title">
-                            <img class="myui-top-image" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
-                            <span class="myui-topic-name">最新</span>
-                        </div>
-                    </li>
-                </ul>
+        <div class="layui-col-md9">
+            <div class="topics-nav">
+                <a class="layui-font-18 myui-submenu  active" src="">
+                    全部</a>
             </div>
-        </div>
-        <div class="layui-col-md7" id="image-list-container">
-            <div class="layui-card myui-card" th:each="dynamic : ${dynamics}">
-                <div class="myui-avatar-container">
-                    <img th:src="@{${dynamic.avatar}}" th:onclick="|window.location.href='/user/' + ${dynamic.userId}|"  src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg" class="myui-avatar-middle">
-                </div>
-                <div class="layui-card-body" style="width: 100%">
-                    <div class="myui-card-header">
-                        <a class="myui-nickname myui-a-tag"  th:onclick="|window.location.href='/user/' + ${dynamic.userId}|" th:text="${dynamic.nickname}">民数</a>
-                        <span class="myui-top-tip" th:if="${dynamic.stick == 1}">置顶</span>
-                        <span class="myui-time-tip" th:text="${'发布于 ' + #dates.format(dynamic.createTime, 'yyyy-MM-dd HH:mm:ss')}">发布于2024-23-12 12:12:21</span>
+            <div class="layui-card myui-card"  th:each="search,stat : ${searchs}" style="padding: 12px 8px;display: flex;position: relative">
+                <div style="display: block;width: 100%">
+                    <a class="layui-row layui-font-18 myui-article-title"  th:text="${search.title}">如何选择合适软件开发语言-本增效和软件性能推荐G兼顾降本增效和软件性能推荐Go语言</a>
+                    <div th:text="${search.preView}" th:onclick="|window.open('/article/}', '_blank')|" class="layui-row myui-font-color-gray" style="line-height: 24px!important;margin-top: 8px;cursor: pointer; display: -webkit-box;overflow: hidden;-webkit-box-orient: vertical;-webkit-line-clamp: 3;word-break: break-all;text-align: justify;text-overflow: ellipsis">
+                        当前入关你想找一家科技公司开发你的软件，您又不懂选择着那种开发语言合适你的项目，我们从ja
+                        va、C#、PHP过来的团队，建议您优选Go,Go 语言以其卓越的并发性能、快速的编译速度和丰富的标准库而在开发领域崭露头角。使用 Go 语言，可以构建出高性能
+                        、占用服务器资源小、可维护的网络应用，满足不断增长的互联网需求。所以选择Go来开发您的项目性价比是最高的，不仅仅在开发成本减少、
                     </div>
-                    <a class="myui-card-titler" target="_blank" href="http://localhost:8080" th:if="${dynamic.type == 1}" th:text="${dynamic.title}" th:onclick="|window.open('/dynamic/${dynamic.id}', '_blank')|">
-                        Go 语言社区系统 BBS-GO 4.0.0 发布，升级vue3、nuxt3
-                    </a>
-                    <div class="myui-card-content" th:text="${dynamic.preView}" th:onclick="|window.open('/dynamic/${dynamic.id}', '_blank')|">
-                        卡片式面板面板通常用于非白色背景色的主体内
-                        从而映衬出边框投影卡片式面板面板通常用于非白色背景色的主体内
-                        从而映衬出边框投影卡片式面板面板通常用于非白色背景色的主体内
-                        从而映衬出边框投影卡片式面板面板通常用于非白色背景色的主体内
-                        从而映衬出边框投影卡片式面板面板通常用于非白色背景色的主体内
-                        从而映衬出边框投影
-                    </div>
-                    <ul class="myui-image-ul layui-row">
-                        <li class="myui-image-li" th:each="image : ${#thJson.parseStringArray(dynamic.imageList)}">
-                            <img class="myui-list-image" th:src="${image}" src="https://picsum.photos/400">
-                        </li>
-                    </ul>
-                    <div class="myui-card-footer">
-                        <div class="myui-gap" th:classappend="${dynamic.liked ? 'active' : ''}" th:id="${'like-gap-' + dynamic.id}" th:onclick="|doLikeOrUnlike(${dynamic.id})|">
-                            <i class="layui-icon layui-icon-praise"></i>&nbsp;点赞&nbsp;<span th:text="${dynamic.likeNumber}" th:id="${'like-number-' + dynamic.id}">2121</span>
+                    <div class="layui-row" style="margin-top: 10px;display: flex">
+                        <span style="font-weight: bold;color: #04a99a;cursor: pointer" th:text="${search.nickname}">dererrker</span>
+                        <span class="myui-font-color-gray layui-font-12">&nbsp;发布于&nbsp;</span>
+                        <span class="myui-font-color-gray layui-font-12" style="line-height: 18px" th:text="${#dates.format(search.createTime, 'yyyy-MM-dd HH:mm:ss')}">2023-23-12 12:12:12</span>
+                        <div style="margin-left: 5px;max-width: 70%;">
+                            <span th:each="tag,stat : ${#thJson.parseStringArray(search.tags)}" th:text="${tag}" th:if="${stat.index < 3}" class="myui-circled-word layui-font-12 myui-background-color-light-gray myui-font-color-gray">开撒但是是的武器大全源</span>
+                            <!--                            <span class="myui-circled-word layui-font-12 myui-background-color-light-gray myui-font-color-gray">开撒但是是的武器大全源</span>-->
+                            <!--                            <span class="myui-circled-word layui-font-12 myui-background-color-light-gray myui-font-color-gray">开撒但是是的武器大全源</span>-->
                         </div>
-                        <div  class="myui-gap" th:onclick="|window.open('/dynamic/${dynamic.id}', '_blank')|">
-                            <i class="layui-icon layui-icon-reply-fill"></i>&nbsp;评论&nbsp;<span th:text="${dynamic.commentNumber}">2121</span>
-                        </div>
-                        <div  class="myui-gap" th:onclick="|window.open('/dynamic/${dynamic.id}', '_blank')|">
-                            <i class="layui-icon layui-icon-read"></i>&nbsp;浏览&nbsp;<span th:text="${dynamic.viewNumber}">2121</span>
-                        </div>
-                        <div class="myui-topic-tip" th:text="${dynamic.topicName}">开源</div>
                     </div>
                 </div>
+<!--                <div style="margin-left: 10px;width: 200px;height: 110px;display: flex;justify-content: center;align-items: center;position: relative;right: 0">-->
+<!--                    <img style="max-width: 100%;max-height: 100%;object-fit: cover" th:src="@{${article.cover}}" th:if="${#strings.isEmpty(article.cover) == false}" src="https://file.mlog.club/images/2024/02/26/4f4bfcbe81542c5687dfcf1a2e3d39d6.png">-->
+<!--                </div>-->
             </div>
             <div class="layui-row" style="justify-content: center;display: flex" id="load-more-btn-area">
-                <button th:classappend="${#lists.size(dynamics) < 8 ? 'myui-hide' : ''}" id="load-more-btn" class="layui-btn layui-btn-xs">点击加载更多</button>
-                <button th:classappend="${#lists.size(dynamics) >= 8 ? 'myui-hide' : ''}" id="load-all" class="layui-btn layui-btn-xs layui-btn-primary">已经到底咯~</button>
+                <button th:classappend="${#lists.size(searchs) < 8 ? 'myui-hide' : ''}" id="load-more-btn" class="layui-btn layui-btn-xs">点击加载更多</button>
+                <button th:classappend="${#lists.size(searchs) >= 8 ? 'myui-hide' : ''}" id="load-all" class="layui-btn layui-btn-xs layui-btn-primary">已经到底咯~</button>
             </div>
         </div>
-        <div class="layui-col-md3">
+        <div class="layui-col-md3" th:replace="_fragment::rightInfo('欢迎访问kkblog开发社区，目前属于demo版本，欢迎注册留言', ${ranks})">
             <div class="layui-card">
                 <div class="layui-card-header myui-side-title">公告</div>
                 <div class="layui-card-body">
@@ -166,135 +119,5 @@
     © 2024 Powered by Derek
 </div>
 
-
-<!-- 请勿在项目正式环境中引用该 layui.js 地址 -->
-<div th:replace="_include::image-preview">
-    <script src="../static/layui/layui.js"></script>
-    <script src="../static/image_preview/pre.js"></script>
-</div>
-
-<script th:inline="javascript">
-    let user = [[${user}]]
-    let dynamics = [[${dynamics}]]
-    let topics = [[${topics}]]
-    let pageNum = 1;
-    let doLikeOrUnlike = function (id) {
-         if (user === undefined || user === null) {
-             layer.open({
-                 title: '系统提示'
-                 ,content: '请登录后进行操作'
-             });
-             return;
-         }
-        if($('#like-gap-' + id).hasClass('active')) {
-            $.get('/dynamic/unlike?dynamicId=' + id, function(res) {
-                if (res.code === 200){
-                    layer.msg('取消点赞成功！', {icon: 1}, function(){});
-                    $('#like-gap-' + id).removeClass('active')
-                    $('#like-number-' + id).text(Number($('#like-number-' + id).text()) - 1);
-                } else {
-                    layer.open({
-                        title: '系统提示'
-                        ,content: res.msg
-                    });
-                }
-            });
-        } else {
-            $.get('/dynamic/like?dynamicId=' + id, function(res) {
-                if (res.code === 200) {
-                    layer.msg('点赞成功！', {icon: 1}, function(){});
-                    $('#like-gap-' + id).addClass('active')
-                    $('#like-number-' + id).text(Number($('#like-number-' + id).text()) + 1);
-                } else {
-                    layer.open({
-                        title: '系统提示'
-                        ,content: res.msg
-                    });
-                }
-            });
-        }
-    }
-    
-    $(document).ready(function () {
-        $('#load-more-btn').on('click', function () {
-            let topicId;
-            for (let i = 0; i < topics.length; i++) {
-                if (topics[i].selected) {
-                    topicId = topics[i].id;
-                    break;
-                }
-            }
-            let dynamicId = dynamics[dynamics.length - 1].id
-            $.get('/index/more?dynamicId=' + dynamicId + "&topicId=" + topicId + "&pageNum=" + pageNum, function(res) {
-                if (res.code === 200) {
-                    pageNum ++;
-                    dynamics = res.data;
-                    let html = ""
-                    for(let i = 0; i < res.data.length; i++) {
-                        html += genDynamicHtml(res.data[i])
-                    }
-                    $('#load-more-btn-area').before(html)
-                    if (res.data.length < 8) {
-                        $('#load-more-btn').addClass('myui-hide')
-                        $('#load-all').removeClass('myui-hide')
-                    }
-                } else {
-                    layer.open({
-                        title: '系统提示'
-                        ,content: res.msg
-                    });
-                }
-            });
-        })
-    })
-    
-    let genDynamicHtml = function (dynamic) {
-        let stick = dynamic.stick ? "<span class='myui-top-tip'>置顶</span>" : "";
-        let tile = dynamic.type === 0 ? '' : ("<a class='myui-card-titler' target='_blank' href='http://localhost:8080' onclick='window.open(\"/dynamic/" + dynamic.id + "\", \"_blank\")'>" + dynamic.title + "</a>");
-        let images = JSON.parse(dynamic.imageList);
-        let imageHtml = ""
-        if (images != null) {
-            for(let i = 0; i < images.length; i++) {
-                imageHtml += "<li class='myui-image-li' >" +
-                    "    <img class='myui-list-image' src='" + images[i] + "'>" +
-                    "</li>";
-            }
-        }
-        let liked = dynamic.liked ? "active" : "";
-        return  "<div class='layui-card myui-card' th:each='dynamic : ${dynamics}'>" +
-            "                <div class='myui-avatar-container'>" +
-            "                    <img onclick='window.location.href=\"/user/" + dynamic.userId + "\"' src='" + dynamic.avatar + "' class='myui-avatar-middle'>" +
-            "                </div>" +
-            "                <div class='layui-card-body' style='width: 100%'>" +
-            "                    <div class='myui-card-header'>" +
-            "                        <a onclick='window.location.href=\"/user/" + dynamic.userId + "\"' class='myui-nickname myui-a-tag'>" + dynamic.nickname + "</a>"
-            + stick +
-            "                        <span class='myui-time-tip'>发布于 " + dynamic.createTime + "</span>" +
-            "                    </div>"
-            + tile +
-            "                    <div class='myui-card-content' onclick='window.open(\"/dynamic/ " + dynamic.id + "\", \"_blank\")'>"
-            + dynamic.preView +
-            "                    </div>" +
-            "                    <ul class='myui-image-ul layui-row'>"
-             + imageHtml +
-            "                    </ul>" +
-            "                    <div class='myui-card-footer'>" +
-            "                        <div class='myui-gap " + liked + "' id='like-gap-" + dynamic.id + "' onclick='doLikeOrUnlike(" + dynamic.id + ")'>" +
-            "                            <i class='layui-icon layui-icon-praise'></i>&nbsp;点赞&nbsp;<span id='like-number-" + dynamic.id + "'>" +
-            dynamic.likeNumber + " </span>" +
-            "                        </div>" +
-            "                        <div  class='myui-gap'>" +
-            "                            <i class='layui-icon layui-icon-reply-fill'></i>&nbsp;评论&nbsp;<span th:text='${dynamic.commentNumber}'>" + dynamic.commentNumber + "</span>" +
-            "                        </div>" +
-            "                        <div  class='myui-gap'>" +
-            "                            <i class='layui-icon layui-icon-read'></i>&nbsp;浏览&nbsp;<span th:text='${dynamic.viewNumber}'>" + dynamic.viewNumber + "</span>" +
-            "                        </div>" +
-            "                        <div class='myui-topic-tip'>" + dynamic.topicName + "</div>" +
-            "                    </div>" +
-            "                </div>" +
-            "            </div>"
-    }
-</script>
-</script>
 </body>
 </html>

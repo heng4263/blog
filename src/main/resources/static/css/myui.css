@@ -333,6 +333,15 @@ body {
 
 }
 
+.topics-nav {
+    align-items: center;
+    border-bottom: 1px solid var(--border-color) !important;
+    display: flex;
+    font-size: 16px;
+    font-weight: 700;
+    justify-content: space-between;
+}
+
 .myui-tag-select {
     width: 100%;
     border-right: solid;

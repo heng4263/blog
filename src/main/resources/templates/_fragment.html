@@ -111,16 +111,7 @@
             });
         });
 
-        // document.getElementById('search-input').addEventListener('input', function(event) {
-        //     var searchTerm = event.target.value; // 获取输入框中的值
-        //     console.log('搜索词：', searchTerm);
-        //
-        //     if (searchTerm) {
-        //         performSearch(searchTerm);
-        //     } else {
-        //         console.log('搜索词为空');
-        //     }
-        // });
+
         document.getElementById('search-input').addEventListener('keydown', function(event) {
             var searchTerm = event.target.value; // 获取输入框中的值
             // 检查是否按下了回车键
@@ -135,45 +126,52 @@
             }
         });
 
-        function performSearch(searchTerm) {
-            var encodedSearchTerm = encodeURIComponent(searchTerm);
-            $.get('/search/like?searchTerm=' + encodedSearchTerm)
-                .done(function(res) {
-                    if (res.code === 200) {
-                        layer.msg('查询成功！', {icon: 1}, function() {});
-                        // 在这里处理搜索结果，例如更新UI
-                    } else {
-                        layer.open({
-                            title: '系统提示',
-                            content: res.msg
-                        });
-                    }
-                })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error('AJAX 请求失败：', textStatus, errorThrown);
-                    // 在这里处理错误情况
-                });
-        }
+
+        // function performSearch(searchTerm) {
+        //     var encodedSearchTerm = encodeURIComponent(searchTerm);
+        //     $.get('/search/like?keyword=' + encodedSearchTerm, function(res) {
+        //         console.log(res); // 添加这行以调试响应内容
+        //         if (res.code === 200) {
+        //             window.location.href = "http://localhost:8080/search/like?keyword=" + encodedSearchTerm;
+        //         } else {
+        //             layer.open({
+        //                 title: '系统提示',
+        //                 content: '进入else'
+        //             });
+        //         }
+        //     });
+        // }
 
         function performSearch(searchTerm) {
             var encodedSearchTerm = encodeURIComponent(searchTerm);
-            $.get('/search/like?searchTerm=' + encodedSearchTerm)
-                .done(function(res) {
+            $.ajax({
+                url: '/search/like?keyword=' + encodedSearchTerm,
+                type: 'GET',
+                dataType: 'json', // 确保期望 JSON 响应
+                success: function(res) {
+                    console.log(res); // 调试响应内容
+
                     if (res.code === 200) {
-                        layer.msg('查询成功！', {icon: 1}, function() {});
-                        // 在这里处理搜索结果，例如更新 UI
+                        window.location.href = "/search/results?keyword=" + encodedSearchTerm;
                     } else {
                         layer.open({
                             title: '系统提示',
                             content: res.msg
                         });
                     }
-                })
-                .fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error('AJAX 请求失败：', textStatus, errorThrown);
-                    // 在这里处理错误情况
-                });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Request failed: ' + textStatus, errorThrown);
+                    layer.open({
+                        title: '系统提示',
+                        content: '请求失败，请稍后重试。'
+                    });
+                }
+            });
         }
+
+
+
 
     </script>
 </div>
@@ -344,6 +342,7 @@
         </div>
     </div>
 </th:block>
+
 
 
 <!--主页右侧信息栏-->
