@@ -30,11 +30,15 @@
                 <a href="" target="_blank" class="layui-font-18">Github</a>
             </li>
         </ul>
-<!--        搜索框-->
-        <div class="searchFormDiv">
-            <div class="sear-input" style="margin-top: 10px">
-                <input class="layui-input" type="text" id="search-input" placeholder="搜索" autocomplete="off">
+        <!--搜索框-->
+        <div class="myui-navbar-item">
+            <div class="myui-search-input" style="margin-top: 0px">
+                <input class="myui-input" type="text" id="search-input" placeholder="输入你想查询的内容"
+                       autocomplete="off">
+                <span><i class=" layui-icon layui-icon-search" style="font-size: 16px"></i></span>
+
             </div>
+
         </div>
 
         <div style="position: absolute;right: 50px;margin-top: 10px">
@@ -42,7 +46,7 @@
                 <a class="layui-btn" style="margin-right: 20px" th:href="@{'/login'}" th:if="${user == null}">
                     登录</a>
                 <button class="layui-btn" id="post-button" style="margin-right: 20px" th:if="${user != null}">
-                    <i class="layui-icon layui-icon-add-1" ></i>
+                    <i class="layui-icon layui-icon-add-1"></i>
                     发表
                 </button>
                 <a href="javascript:;" class="myui-font-color-gray" id="user-info" th:if="${user != null}">
@@ -112,66 +116,27 @@
         });
 
 
-        document.getElementById('search-input').addEventListener('keydown', function(event) {
-            var searchTerm = event.target.value; // 获取输入框中的值
-            // 检查是否按下了回车键
-            if (event.key === 'Enter') {
-                event.preventDefault(); // 阻止默认的表单提交行为（如果有的话）
-                if (searchTerm) {
-                    console.log('搜索词：', searchTerm);
-                    performSearch(searchTerm);
-                } else {
-                    console.log('搜索词为空');
-                }
-            }
-        });
+        $(document).ready(function () {
+            // 解析URL并获取关键词参数值
+            var urlParams = new URLSearchParams(window.location.search);
+            var keyword = urlParams.get('keyword');
 
+            // 将关键词设置为输入框的值
+            $('#search-input').val(keyword);
 
-        // function performSearch(searchTerm) {
-        //     var encodedSearchTerm = encodeURIComponent(searchTerm);
-        //     $.get('/search/like?keyword=' + encodedSearchTerm, function(res) {
-        //         console.log(res); // 添加这行以调试响应内容
-        //         if (res.code === 200) {
-        //             window.location.href = "http://localhost:8080/search/like?keyword=" + encodedSearchTerm;
-        //         } else {
-        //             layer.open({
-        //                 title: '系统提示',
-        //                 content: '进入else'
-        //             });
-        //         }
-        //     });
-        // }
-
-        function performSearch(searchTerm) {
-            var encodedSearchTerm = encodeURIComponent(searchTerm);
-            $.ajax({
-                url: '/search/like?keyword=' + encodedSearchTerm,
-                type: 'GET',
-                dataType: 'json', // 确保期望 JSON 响应
-                success: function(res) {
-                    console.log(res); // 调试响应内容
-
-                    if (res.code === 200) {
-                        window.location.href = "/search/results?keyword=" + encodedSearchTerm;
+            // 监听输入框的按键事件
+            document.getElementById('search-input').addEventListener('keydown', function (event) {
+                var keyword = event.target.value;
+                // 检查是否按下了回车键
+                if (event.key === 'Enter') {
+                    if (keyword) {
+                        window.location.href = "/search/results?keyword=" + encodeURIComponent(keyword);
                     } else {
-                        layer.open({
-                            title: '系统提示',
-                            content: res.msg
-                        });
+                        console.log('搜索词为空');
                     }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('Request failed: ' + textStatus, errorThrown);
-                    layer.open({
-                        title: '系统提示',
-                        content: '请求失败，请稍后重试。'
-                    });
                 }
             });
-        }
-
-
-
+        });
 
     </script>
 </div>
@@ -330,7 +295,7 @@
                      ,data-type=${favorite.type == 0 ? 'dynamic' : 'article'}"
                      th:onclick="|DoStarOrUnStar(this.getAttribute('data-id'), this.getAttribute('data-type'))|">
                     <i class="layui-icon layui-icon-rate"></i>&nbsp;收藏<span th:text="${favorite.starNumber}"
-                    th:id="${'star-number-' + favorite.type == 0 ?  favorite.dynamicId :  favorite.articleId}">2121</span>
+                                                                              th:id="${'star-number-' + favorite.type == 0 ?  favorite.dynamicId :  favorite.articleId}">2121</span>
 
                 </div>
 
@@ -342,7 +307,6 @@
         </div>
     </div>
 </th:block>
-
 
 
 <!--主页右侧信息栏-->

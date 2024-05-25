@@ -29,8 +29,6 @@ public class SearchDto {
     private String title;
     //预览
     private String preView;
-    //内容
-    private String content;
     //创建时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;

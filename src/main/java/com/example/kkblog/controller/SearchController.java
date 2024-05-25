@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Author xiaoke
@@ -27,74 +28,67 @@ import java.util.Objects;
 @RequestMapping("/search")
 public class SearchController {
 
-
-    @Autowired
-    private ArticleMapper articleMapper;
-
-    @Autowired
-    private StarMapper starMapper;
-
-    @Autowired
-    private DynamicMapper dynamicMapper;
-
     @Autowired
     private UserMapper userMapper;
 
     @Autowired
-    private FollowMapper followMapper;
-
-    @Autowired
-    private DynamicCommentMapper dynamicCommentMapper;
-
-    @Autowired
-    private ArticleCommentMapper articleCommentMapper;
+    private TagMapper tagMapper;
 
     @Autowired
     private KKBlogService kkBlogService;
 
-    @Autowired
-    private LikeMapper likeMapper;
 
 
     @GetMapping("/results")
-    public String searchResults(@RequestParam("keyword") String keyword, Model model) {
-        List<Search> searchs = kkBlogService.search(keyword);
-        List<SearchDto> searchDtoList = new ArrayList<>();
-
-        for (Search search : searchs) {
-            if (search.getSource().equals("article")) {//文章
-                SearchDto searchDto = SearchDto.builder()
-                        .articleId(search.getId())
-                        .title(search.getTitle())
-                        .preView(search.getPreView())
-                        .createTime(search.getCreateTime())
-                        .userId(search.getUserId())
-                        .nickname(search.getNickname())
-                        .source(search.getSource())
-                        .build();
-                searchDtoList.add(searchDto);
-            } else if (search.getSource().equals("dynamic")) { //动态
-                SearchDto searchDto = SearchDto.builder()
-                        .dynamicId(search.getId())
-                        .title(search.getTitle())
-                        .preView(search.getPreView())
-                        .createTime(search.getCreateTime())
-                        .userId(search.getUserId())
-                        .nickname(search.getNickname())
-                        .source(search.getSource())
-                        .build();
-                searchDtoList.add(searchDto);
-            }
+    public String searchResultsByKeywordAndNodeId(@RequestParam("keyword") String keyword, @RequestParam(value = "nodeId", required = false) Integer nodeId, HttpSession session, @NotNull Model model) {
+        List<Search> searchs;
+        if (nodeId == null) {
+            searchs = kkBlogService.search(keyword);
+        } else {
+            String tag = getString(nodeId);
+            searchs = kkBlogService.searchByKeywordAndNodeId(keyword, tag);
         }
+
+        List<SearchDto> searchDtoList = searchs.stream().map(search -> {
+            return SearchDto.builder()
+                    .nickname(search.getNickname())
+                    .articleId(search.getSource().equals("article") ? search.getId() : null)
+                    .dynamicId(search.getSource().equals("dynamic") ? search.getId() : null)
+                    .title(search.getTitle())
+                    .preView(search.getPreView())
+                    .createTime(search.getCreateTime())
+                    .tags(search.getTags())
+                    .userId(search.getUserId())
+                    .source(search.getSource())
+                    .build();
+        }).collect(Collectors.toList());
+
+        model.addAttribute("ranks", userMapper.selectScoresRank());
         model.addAttribute("searchs", searchDtoList);
-        return "search"; // 返回显示结果的视图
+        return "search";
     }
 
-    @GetMapping("/like")
-    @ResponseBody
-    public ResponseDto search(@RequestParam("keyword") String keyword, HttpSession session, @NotNull Model model) {
-        List<Search> searchList = kkBlogService.search(keyword);
-        return ResponseDto.Success("查询成功！", searchList);
+    @NotNull
+    private static String getString(Integer nodeId) {
+        String tag = "";
+        switch (nodeId) {
+            case 1:
+                tag = "[\"全部\"]";
+                break;
+            case 2:
+                tag = "[\"交流\"]";
+                break;
+            case 3:
+                tag = "[\"提问\"]";
+                break;
+            case 4:
+                tag = "[\"反馈\"]";
+                break;
+            default:
+                tag = "[]";
+                break;
+        }
+        return tag;
     }
 
 

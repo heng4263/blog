@@ -14,7 +14,8 @@
 <div style="background: rgb(47,54,60)" th:replace="_fragment::navigate(${user}, 2)">
     <div class="layui-container" style="display:flex;position: relative">
         <div class="myui-logo-container">
-            <img style="width: 80%;height: 80%;border-radius: 5px" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+            <img style="width: 80%;height: 80%;border-radius: 5px"
+                 src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
         </div>
         <ul class="layui-nav" style="margin-left: -10px">
             <li class="layui-nav-item">
@@ -37,9 +38,11 @@
                     登录</a>
                 <button class="layui-btn" id="post-button" style="margin-right: 20px">
                     <i class="layui-icon layui-icon-add-1"></i>
-                    发表</button>
+                    发表
+                </button>
                 <a href="javascript:;" class="myui-font-color-gray" id="user-info">
-                    <img src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg" style="border-radius: 50%;width: 35px;height: 35px ">
+                    <img src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg"
+                         style="border-radius: 50%;width: 35px;height: 35px ">
                     <span class="layui-font-14" style="color: whitesmoke">小小可小可小可小可小可可</span>
                     <i class="layui-icon layui-icon-down" style="color: whitesmoke"></i>
                 </a>
@@ -52,39 +55,79 @@
 <div class="layui-container" style="margin-top: 10px;">
     <div class="layui-row layui-col-space10">
         <div class="layui-col-md9">
-            <div class="topics-nav">
-                <a class="layui-font-18 myui-submenu  active" src="">
-                    全部</a>
+            <div class="layui-panel">
+                <ul class="layui-nav" style="background-color: white" lay-bar="disabled" id="nav-list">
+                    <li class="layui-nav-item">
+                        <a href="#" class="layui-font-black layui-font-16"  data-nodeid="1">全部</a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="#" class="layui-font-gray layui-font-16" data-nodeid="2">交流</a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="#" class="layui-font-gray layui-font-16" data-nodeid="3">提问</a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="#" class="layui-font-gray layui-font-16" data-nodeid="4">反馈</a>
+                    </li>
+                </ul>
+                <script>
+                    $(document).ready(function () {
+                        $('#search-input').on('input', function () {
+                            var keyword = $(this).val();
+                            $('.layui-nav-item a').each(function () {
+                                var nodeId = $(this).data('nodeid');
+                                var newHref = '/search/results?keyword=' + encodeURIComponent(keyword);
+                                if (nodeId !== 1) {
+                                    newHref += '&nodeId=' + nodeId;
+                                }
+                                $(this).attr('href', newHref);
+                            });
+                        });
+
+                        // Trigger the input event to set the initial href values based on the current input value
+                        $('#search-input').trigger('input');
+
+                    });
+                </script>
             </div>
-            <div class="layui-card myui-card"  th:each="search,stat : ${searchs}" style="padding: 12px 8px;display: flex;position: relative">
+            <div class="layui-card myui-card" th:each="search,stat : ${searchs}"
+                 style="padding: 12px 8px;display: flex;position: relative">
                 <div style="display: block;width: 100%">
-                    <a class="layui-row layui-font-18 myui-article-title"  th:text="${search.title}">如何选择合适软件开发语言-本增效和软件性能推荐G兼顾降本增效和软件性能推荐Go语言</a>
-                    <div th:text="${search.preView}" th:onclick="|window.open('/article/}', '_blank')|" class="layui-row myui-font-color-gray" style="line-height: 24px!important;margin-top: 8px;cursor: pointer; display: -webkit-box;overflow: hidden;-webkit-box-orient: vertical;-webkit-line-clamp: 3;word-break: break-all;text-align: justify;text-overflow: ellipsis">
+                    <a class="layui-row layui-font-18 myui-article-title" th:text="${search.title}">如何选择合适软件开发语言-本增效和软件性能推荐G兼顾降本增效和软件性能推荐Go语言</a>
+                    <div th:text="${search.preView}" th:onclick="|window.open('/article/}', '_blank')|"
+                         class="layui-row myui-font-color-gray"
+                         style="line-height: 24px!important;margin-top: 8px;cursor: pointer; display: -webkit-box;overflow: hidden;-webkit-box-orient: vertical;-webkit-line-clamp: 3;word-break: break-all;text-align: justify;text-overflow: ellipsis">
                         当前入关你想找一家科技公司开发你的软件，您又不懂选择着那种开发语言合适你的项目，我们从ja
-                        va、C#、PHP过来的团队，建议您优选Go,Go 语言以其卓越的并发性能、快速的编译速度和丰富的标准库而在开发领域崭露头角。使用 Go 语言，可以构建出高性能
+                        va、C#、PHP过来的团队，建议您优选Go,Go 语言以其卓越的并发性能、快速的编译速度和丰富的标准库而在开发领域崭露头角。使用
+                        Go 语言，可以构建出高性能
                         、占用服务器资源小、可维护的网络应用，满足不断增长的互联网需求。所以选择Go来开发您的项目性价比是最高的，不仅仅在开发成本减少、
                     </div>
                     <div class="layui-row" style="margin-top: 10px;display: flex">
                         <span style="font-weight: bold;color: #04a99a;cursor: pointer" th:text="${search.nickname}">dererrker</span>
                         <span class="myui-font-color-gray layui-font-12">&nbsp;发布于&nbsp;</span>
-                        <span class="myui-font-color-gray layui-font-12" style="line-height: 18px" th:text="${#dates.format(search.createTime, 'yyyy-MM-dd HH:mm:ss')}">2023-23-12 12:12:12</span>
+                        <span class="myui-font-color-gray layui-font-12" style="line-height: 18px"
+                              th:text="${#dates.format(search.createTime, 'yyyy-MM-dd HH:mm:ss')}">2023-23-12 12:12:12</span>
                         <div style="margin-left: 5px;max-width: 70%;">
-                            <span th:each="tag,stat : ${#thJson.parseStringArray(search.tags)}" th:text="${tag}" th:if="${stat.index < 3}" class="myui-circled-word layui-font-12 myui-background-color-light-gray myui-font-color-gray">开撒但是是的武器大全源</span>
-                            <!--                            <span class="myui-circled-word layui-font-12 myui-background-color-light-gray myui-font-color-gray">开撒但是是的武器大全源</span>-->
-                            <!--                            <span class="myui-circled-word layui-font-12 myui-background-color-light-gray myui-font-color-gray">开撒但是是的武器大全源</span>-->
+                            <span th:each="tag,stat : ${#thJson.parseStringArray(search.tags)}" th:text="${tag}"
+                                  th:if="${stat.index < 3}"
+                                  class="myui-circled-word layui-font-12 myui-background-color-light-gray myui-font-color-gray">开撒但是是的武器大全源</span>
                         </div>
                     </div>
                 </div>
-<!--                <div style="margin-left: 10px;width: 200px;height: 110px;display: flex;justify-content: center;align-items: center;position: relative;right: 0">-->
-<!--                    <img style="max-width: 100%;max-height: 100%;object-fit: cover" th:src="@{${article.cover}}" th:if="${#strings.isEmpty(article.cover) == false}" src="https://file.mlog.club/images/2024/02/26/4f4bfcbe81542c5687dfcf1a2e3d39d6.png">-->
-<!--                </div>-->
+
             </div>
+
             <div class="layui-row" style="justify-content: center;display: flex" id="load-more-btn-area">
-                <button th:classappend="${#lists.size(searchs) < 8 ? 'myui-hide' : ''}" id="load-more-btn" class="layui-btn layui-btn-xs">点击加载更多</button>
-                <button th:classappend="${#lists.size(searchs) >= 8 ? 'myui-hide' : ''}" id="load-all" class="layui-btn layui-btn-xs layui-btn-primary">已经到底咯~</button>
+                <button th:classappend="${#lists.size(searchs) < 8 ? 'myui-hide' : ''}" id="load-more-btn"
+                        class="layui-btn layui-btn-xs">点击加载更多
+                </button>
+                <button th:classappend="${#lists.size(searchs) >= 8 ? 'myui-hide' : ''}" id="load-all"
+                        class="layui-btn layui-btn-xs layui-btn-primary">已经到底咯~
+                </button>
             </div>
         </div>
-        <div class="layui-col-md3" th:replace="_fragment::rightInfo('欢迎访问kkblog开发社区，目前属于demo版本，欢迎注册留言', ${ranks})">
+        <div class="layui-col-md3"
+             th:replace="_fragment::rightInfo('欢迎访问kkblog开发社区，目前属于demo版本，欢迎注册留言', ${ranks})">
             <div class="layui-card">
                 <div class="layui-card-header myui-side-title">公告</div>
                 <div class="layui-card-body">
@@ -97,11 +140,17 @@
                 <div class="layui-card-body">
                     <div class="layui-row" style="margin-bottom: 5px" th:each="u,stat:${ranks}">
                         <div class="layui-col-md2" style="padding-top: 1%">
-                            <img class="myui-avatar-small" style="margin: auto;display: block" th:onclick="|window.location.href='/user/' + ${u.id}|" th:src="@{${u.avatar}}" src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
+                            <img class="myui-avatar-small" style="margin: auto;display: block"
+                                 th:onclick="|window.location.href='/user/' + ${u.id}|" th:src="@{${u.avatar}}"
+                                 src="https://unpkg.com/outeres@0.0.10/demo/avatar/1.jpg">
                         </div>
                         <div class="layui-col-md7" style="text-align: left">
-                            <a class="layui-row layui-font-14 myui-a-tag" th:href="@{'/user/' + ${u.id}}" th:text="${u.nickname}">秋天的落叶</a>
-                            <div class="layui-row layui-font-12" style="color: #6c6c70"><span th:text="${u.dynamicNumber}">212</span> 帖子 • <span th:text="${u.commentNumber}">12</span> 评论</div>
+                            <a class="layui-row layui-font-14 myui-a-tag" th:href="@{'/user/' + ${u.id}}"
+                               th:text="${u.nickname}">秋天的落叶</a>
+                            <div class="layui-row layui-font-12" style="color: #6c6c70"><span
+                                    th:text="${u.dynamicNumber}">212</span> 帖子 • <span
+                                    th:text="${u.commentNumber}">12</span> 评论
+                            </div>
                         </div>
                         <div class="layui-col-md3 layui-font-14" style="display: flex;padding-top: 2%;color: #6c6c70">
                             <i class="layui-icon layui-icon-dollar" style="font-size: 14px"></i>&nbsp;
@@ -115,9 +164,9 @@
     </div>
 </div>
 
-<div class="layui-row" style="margin-top: 30px;margin-bottom: 20px;text-align: center;color: darkgrey" th:replace="_fragment::footer">
+<div class="layui-row" style="margin-top: 30px;margin-bottom: 20px;text-align: center;color: darkgrey"
+     th:replace="_fragment::footer">
     © 2024 Powered by Derek
 </div>
-
 </body>
 </html>

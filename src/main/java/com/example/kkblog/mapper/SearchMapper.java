@@ -10,56 +10,56 @@ import java.util.List;
 
 @Mapper
 public interface SearchMapper {
-    
-//    @Select("SELECT hid, title, type, page_views AS pageViews, " +
-//            "TIMESTAMPDIFF(HOUR, create_time, NOW()) AS pastHours, " +
-//            "publisher FROM news_headline " +
-//            "WHERE is_deleted = 0 " +
-//            "<if test='portalVo.keyWords != null and portalVo.keyWords.length() > 0'> " +
-//            "AND title LIKE CONCAT('%', #{portalVo.keyWords}, '%') " +
-//            "</if> " +
-//            "<if test='portalVo.type != 0'> " +
-//            "AND type = #{portalVo.type} " +
-//            "</if>")
-//    List<News> searchNews(@Param("portalVo") PortalVo portalVo);
-
-//    @Select("SELECT id, title, type, view_number AS viewNumber, like_number AS likeNumber, " +
-//            "create_time AS pastHours, user_id AS userId,star_number as starNumber " +
-//            "FROM ( " +
-//            "  SELECT 'dynamic' AS type, id, title, view_number, like_number, create_time, user_id,starNumber " +
-//            "  FROM dynamic " +
-//            "  WHERE is_deleted = 0 " +
-//            "  <if test='search.keyword != null and search.keyword != \"\"'> " +
-//            "    AND (title LIKE CONCAT('%', #{search.keyword}, '%') OR dynamic LIKE CONCAT('%', #{search.keyword}, '%')) " +
-//            "  </if> " +
-//            "  UNION ALL " +
-//            "  SELECT 'article' AS type, id, title, view_number, like_number, create_time, user_id,starNumber " +
-//            "  FROM article " +
-//            "  WHERE is_deleted = 0 " +
-//            "  <if test='search.keyword != null and search.keyword != \"\"'> " +
-//            "    AND (title LIKE CONCAT('%', #{search.keyword}, '%') OR content LIKE CONCAT('%', #{search.keyword}, '%')) " +
-//            "  </if> " +
-//            ") AS content " +
-//            "WHERE <if test='search.type != 0'>type = #{search.type}</if> " +
-//            "ORDER BY create_time DESC")
-//    List<SearchDto> searchContent(@Param("search") Search search);
-
-    @Select("SELECT 'dynamic' AS source, id, title, pre_view AS preview, dynamic AS content, " +
-            "create_time, user_id, view_number, like_number, star_number " +
-            "FROM dynamic " +
-            "WHERE dynamic LIKE CONCAT('%', #{keyword}, '%') " +
-            "OR title LIKE CONCAT('%', #{keyword}, '%') " +
-            "OR tags LIKE CONCAT('%', #{keyword}, '%') " +
-            "OR topic_content LIKE CONCAT('%', #{keyword}, '%') " +
-            "UNION " +
-            "SELECT 'article' AS source, id, title, preview, content, " +
-            "create_time, user_id, view_number, like_number, star_number " +
-            "FROM article " +
-            "WHERE content LIKE CONCAT('%', #{keyword}, '%') " +
-            "OR title LIKE CONCAT('%', #{keyword}, '%') " +
-            "OR tags LIKE CONCAT('%', #{keyword}, '%') " +
-            "OR preview LIKE CONCAT('%', #{keyword}, '%') " +
-            "ORDER BY create_time DESC")
+    @Select("WITH DynamicSearches AS (" +
+            "    SELECT 'dynamic' AS source, d.id, d.title, d.pre_view, d.dynamic as content, d.tags, d.create_time, d.user_id, u.nickname AS user_nickname" +
+            "    FROM dynamic d" +
+            "             LEFT JOIN user u ON d.user_id = u.id" +
+            "    WHERE d.dynamic LIKE CONCAT('%', #{keyword}, '%')" +
+            "       OR d.title LIKE CONCAT('%', #{keyword}, '%')" +
+            "       OR d.tags LIKE CONCAT('%', #{keyword}, '%')" +
+            "       OR d.topic_content LIKE CONCAT('%', #{keyword}, '%')" +
+            "       OR u.nickname LIKE CONCAT('%', #{keyword}, '%')" +
+            ")," +
+            "     ArticleSearches AS (" +
+            "         SELECT 'article' AS source, a.id, a.title, a.preview, a.content, a.tags, a.create_time, a.user_id, u.nickname AS user_nickname" +
+            "         FROM article a" +
+            "                  LEFT JOIN user u ON a.user_id = u.id" +
+            "         WHERE a.content LIKE CONCAT('%', #{keyword}, '%')" +
+            "            OR a.title LIKE CONCAT('%', #{keyword}, '%')" +
+            "            OR a.tags LIKE CONCAT('%', #{keyword}, '%')" +
+            "            OR a.preview LIKE CONCAT('%', #{keyword}, '%')" +
+            "            OR u.nickname LIKE CONCAT('%', #{keyword}, '%')" +
+            "     )" +
+            "SELECT * FROM DynamicSearches UNION SELECT * FROM ArticleSearches ORDER BY create_time DESC;")
     List<Search> search(@Param("keyword") String keyword);
 
+    @Select("WITH DynamicSearches AS ("
+            + "    SELECT 'dynamic' AS source, d.id, d.title, d.pre_view, d.dynamic AS content, d.tags, d.create_time, d.user_id, u.nickname AS user_nickname"
+            + "    FROM dynamic d"
+            + "    LEFT JOIN user u ON d.user_id = u.id"
+            + "    WHERE ("
+            + "            d.dynamic LIKE CONCAT('%', #{keyword}, '%')"
+            + "        OR d.title LIKE CONCAT('%', #{keyword}, '%')"
+            + "        OR d.topic_content LIKE CONCAT('%', #{keyword}, '%')"
+            + "        OR u.nickname LIKE CONCAT('%', #{keyword}, '%')"
+            + "    )"
+            + "    AND  JSON_CONTAINS(d.tags, #{tag})"
+            + "),"
+            + "ArticleSearches AS ("
+            + "    SELECT 'article' AS source, a.id, a.title, a.preview, a.content, a.tags, a.create_time, a.user_id, u.nickname AS user_nickname"
+            + "    FROM article a"
+            + "    LEFT JOIN user u ON a.user_id = u.id"
+            + "    WHERE ("
+            + "            a.content LIKE CONCAT('%', #{keyword}, '%')"
+            + "        OR a.title LIKE CONCAT('%', #{keyword}, '%')"
+            + "        OR a.preview LIKE CONCAT('%', #{keyword}, '%')"
+            + "        OR u.nickname LIKE CONCAT('%', #{keyword}, '%')"
+            + "    )"
+            + "    AND JSON_CONTAINS(a.tags, #{tag})"
+            + ")"
+            + "SELECT * FROM DynamicSearches "
+            + "UNION "
+            + "SELECT * FROM ArticleSearches "
+            + "ORDER BY create_time DESC")
+    List<Search> searchByKeywordAndNodeId(@Param("keyword") String keyword, @Param("tag") String tag);
 }

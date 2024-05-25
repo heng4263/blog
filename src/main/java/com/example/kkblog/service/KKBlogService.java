@@ -139,4 +139,9 @@ public class KKBlogService {
     public List<Search> search(String keyword) {
         return searchMapper.search(keyword);
     }
+
+    //根据keyword和nodeId实现搜索功能
+    public List<Search> searchByKeywordAndNodeId(String keyword, String tag) {
+        return searchMapper.searchByKeywordAndNodeId(keyword, tag);
+    }
 }
