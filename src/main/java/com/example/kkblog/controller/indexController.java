@@ -157,4 +157,6 @@ public class indexController {
         model.addAttribute("articles", articlePreDtos);
         return "article";
     }
+
+
 }

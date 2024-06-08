@@ -58,7 +58,7 @@
             <div class="layui-panel">
                 <ul class="layui-nav" style="background-color: white" lay-bar="disabled" id="nav-list">
                     <li class="layui-nav-item">
-                        <a href="#" class="layui-font-black layui-font-16"  data-nodeid="1">全部</a>
+                        <a href="#" class=" layui-font-gray layui-font-16" data-nodeid=" ">全部</a>
                     </li>
                     <li class="layui-nav-item">
                         <a href="#" class="layui-font-gray layui-font-16" data-nodeid="2">交流</a>
@@ -72,22 +72,16 @@
                 </ul>
                 <script>
                     $(document).ready(function () {
-                        $('#search-input').on('input', function () {
-                            var keyword = $(this).val();
-                            $('.layui-nav-item a').each(function () {
-                                var nodeId = $(this).data('nodeid');
-                                var newHref = '/search/results?keyword=' + encodeURIComponent(keyword);
-                                if (nodeId !== 1) {
-                                    newHref += '&nodeId=' + nodeId;
-                                }
-                                $(this).attr('href', newHref);
-                            });
+
+                        $('.layui-nav-item a').on('click', function (e) {
+                            var keyword = $('#search-input').val();
+                            var nodeId = $(this).data('nodeid') || '';
+                            $('.layui-nav-item a[data-nodeid="' + (nodeId || 1) + '"]').removeClass('layui-font-gray').addClass('layui-font-black');
+                            window.location.href = '/search/results?keyword=' + keyword + '&nodeId=' + nodeId;
                         });
 
-                        // Trigger the input event to set the initial href values based on the current input value
-                        $('#search-input').trigger('input');
-
                     });
+
                 </script>
             </div>
             <div class="layui-card myui-card" th:each="search,stat : ${searchs}"

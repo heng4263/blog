@@ -6,7 +6,9 @@
     <link href="../static/layui/layui.css" th:href="@{/layui/layui.css}" rel="stylesheet">
     <script src="../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
     <link href="../static/css/myui.css" th:href="@{/css/myui.css}" rel="stylesheet">
+    <link href="../static/css/email.css" th:href="@{/css/email.css}" rel="stylesheet">
     <script src="../static/jquery/jquery-3.7.1.min.js" th:src="@{/jquery/jquery-3.7.1.min.js}"></script>
+
 </head>
 <body>
 <!--导航栏-->
@@ -38,9 +40,13 @@
                 <span><i class=" layui-icon layui-icon-search" style="font-size: 16px"></i></span>
 
             </div>
-
         </div>
-
+        <!--私信-->
+        <div class="myui-navbar-item">
+            <a href="/user/email" class="myui-font-color-gray">
+                <i class="layui-icon layui-icon-email"  style="font-size: 20px"></i>
+            </a>
+        </div>
         <div style="position: absolute;right: 50px;margin-top: 10px">
             <div style="display: flex">
                 <a class="layui-btn" style="margin-right: 20px" th:href="@{'/login'}" th:if="${user == null}">
@@ -69,11 +75,11 @@
                 }, {
                     title: '发话题'
                     , id: 101
-                    , href: '/dynamic/create-topic' //开启超链接
+                    , href: '/dynamic/create-topic'
                 }, {
                     title: '发文章'
                     , id: 101
-                    , href: '/article/create' //开启超链接
+                    , href: '/article/create'
                 }]
                 , id: 'demo1'
                 //菜单被点击的事件
@@ -308,6 +314,16 @@
     </div>
 </th:block>
 
+<!--消息列表-用户列表-->
+<!--<th:block th:fragment="preEmail(emails)">-->
+<!--    <li class="touser" th:each="user : ${users}" th:onclick="|Chat('${user.username}')|">-->
+<!--        <img  class="pg" th:src="${user.avatar}">-->
+<!--        <div class="information">-->
+<!--            <span class="tousername" th:text="${user.username}">用户名</span>-->
+<!--            <span class="preview" >用户预览</span>-->
+<!--        </div>-->
+<!--    </li>-->
+<!--</th:block>-->
 
 <!--主页右侧信息栏-->
 <div class="layui-col-md3" th:fragment="rightInfo(notice, ranks)">

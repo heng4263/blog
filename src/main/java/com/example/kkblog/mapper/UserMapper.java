@@ -50,4 +50,17 @@ public interface UserMapper extends BaseMapper<User> {
     // 加积分
     @Update("UPDATE `user` set scores=scores+#{scores} where id=#{id}")
     Integer addUserScores(User user);
+
+    @Select("select * from user where username = #{username};")
+    User selectByUserName(String username);
+
+    void addUser(User user);
+
+    //根据username查询所有在线用户
+    @Select("select * from user where username != #{username};")
+    List<User> selectAllUser(String username);
+
+    //根据username查询用户id
+    @Select("select id from user where username = #{username};")
+    Integer selectUserId(String username);
 }

@@ -23,7 +23,7 @@
     </div>
     <div class="layui-row" style="display: flex;justify-content: center;margin-top: 10px">
         <span class="myui-font-color-gray layui-font-14">
-            一个配置简单易上手的开源博客社区系统
+            一个配置简单易上手的博客社区系统
         </span>
     </div>
     <form class="layui-form" id="login-form">
@@ -86,7 +86,7 @@
                 key = res.data.key
                 $('#image-code').attr("src", res.data.code);
                 if (res.data.type === 1) {
-                    debugger
+                    // debugger
                     $('#ver-code').val(res.data.value);
                 }
             } else {

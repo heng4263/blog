@@ -140,4 +140,40 @@ public class UserController {
         }
         return ResponseDto.Success("查询成功！", ArticlePreDtos);
     }
+
+    @GetMapping("/email")
+    public String email(HttpSession session, Model model) {
+        UserDto loginUser = (UserDto) session.getAttribute("user");
+        UserDto userDto = userMapper.selectUserDtoByUserId(loginUser.getId());
+        List<User> users = userMapper.selectAllUser(loginUser.getUsername());
+        // 查询用户的话题数量
+        userDto.setDynamicNumber(dynamicMapper.selectDynamicNumberByUserId(userDto.getId()));
+        // 查询用户的评论数量
+        userDto.setCommentNumber((dynamicCommentMapper.selectDynamicCommentNumberByUserId(userDto.getId()))
+                + articleCommentMapper.selectCommentNumberByUserId(userDto.getId()));
+        // 查询用户的粉丝
+        List<UserDto> fans = followMapper.selectFans(loginUser.getId());
+        // 查询用户的关注数量
+        userDto.setFollowNumber(followMapper.selectFollowNumber(loginUser.getId()));
+        // 查询用户的粉丝数量
+        userDto.setFanNumber(followMapper.selectFanNumber(loginUser.getId()));
+        // 查询用户的关注列表
+        List<UserDto> follows = followMapper.selectFollowedUsers(loginUser.getId());
+        if (loginUser != null) {
+            // 查询该用户是否为自己关注
+            userDto.setFollow(kkBlogService.ifFollow(loginUser.getId(), loginUser.getId()));
+            // 查询被访问用户是否是自己
+            userDto.setMe(Objects.equals(loginUser.getId(), userDto.getId()));
+            // 查询自己的关注列表
+            List<Integer> followingIds = followMapper.selectFollowedIds(loginUser.getId());
+            // 查询用户在自己的关注列表
+            fans.forEach(item -> item.setFollow(followingIds.contains(item.getId())));
+            follows.forEach(item -> item.setFollow(followingIds.contains(item.getId())));
+        }
+        model.addAttribute("fans", fans);
+        model.addAttribute("follows", follows);
+        model.addAttribute("userDto", userDto);
+        model.addAttribute("users", users);
+        return "user-email";
+    }
 }
