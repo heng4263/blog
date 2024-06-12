@@ -148,7 +148,9 @@ public class ChatController extends TextWebSocketHandler {
             if(session2 != null) {
                 message1.setSender(false);
                 message1.setUserId(toId);
-                message1.setAvatar(userMapper.selectUserDtoByUserId(toId).getAvatar());
+//                message1.setAvatar(userMapper.selectUserDtoByUserId(toId).getAvatar());
+                message1.setAvatar(userMapper.selectUserDtoByUserId(fromId).getAvatar());
+
                 message1.setMessage(content);
                 List<Message> list = new ArrayList<>();
                 list.add(message1);

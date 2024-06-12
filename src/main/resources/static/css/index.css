@@ -159,8 +159,8 @@ em {
 
 .MessageList {
     margin: 10px;
-    height: 66%;
-
+    /*height: 66%;*/
+    height: 500px;
     overflow: auto;
 }
 
@@ -231,6 +231,8 @@ em {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
+    height: 100vh; /* 100% viewport height to ensure full height */
+
 
 
 }
@@ -370,7 +372,8 @@ em {
     -webkit-box-align: stretch;
     -ms-flex-align: stretch;
     align-items: stretch;
-    height: 100%;
+    height: 100vh; /* 100% viewport height to ensure full height */
+
 }
 
 .title {
@@ -396,6 +399,7 @@ em {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
+    /*overflow-y: auto; !* 确保滚动条正常显示 *!*/
     position: relative;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -443,9 +447,10 @@ em {
     overflow: hidden;
     background: #fff;
 }
-.is-me  {
+.not-me  {
     position: relative;
     float: right;
+    border-radius: 0 16px 16px 16px;
     color: #fff;
 }
 

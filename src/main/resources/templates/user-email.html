@@ -200,8 +200,8 @@
         </div>
 
 
-        <div class="layui-col-md9">
-            <div class="layui-card" style="padding: 10px">
+        <div class="layui-col-md9" style="height: 500px;">
+            <div class="layui-card" style="padding: 10px;height: 500px">
                 <div class="layui-row">
                     <a class="layui-font-18 myui-submenu  active" src="">
                         <i class="layui-icon layui-icon-email" style="font-size: 20px"></i>
@@ -234,72 +234,40 @@
                             </div>
                         </div>
                         <div class="myui-layout-right">
-                            <div class="dialog hide">
+                            <div class="dialog ">
                                 <div class="title">
-                                    <span>xiaoxiaoke</span>
+                                    <span id="title"></span>
                                 </div>
                                 <div class="message-list">
-                                    <div class="msg-item not-me">
-                                        <a title="牛马程序员"
-                                           target="_blank" class="avatar"
-                                           style="background-image: url(../static/avatars/img_0.png);"></a>
-                                        <div class="message">
-                                            <div class="message-content">感谢你的关注，计算
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="msg-item is-me">
-                                        <a title="你在雾雨中"
-                                           target="_blank" class="avatar"
-                                           style="background-image: url(../static/avatars/img_3.png);  float: right;"></a>
-                                        <div class="message">
-                                            <div class="message-content is-me">你好呀
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="send-box" style="height: 180px">
-                                    <div class="row">
-                                        <div class="space-margin">
-                                            <label class="image-upload-btn"></label>
-                                        </div>
-                                    </div>
-
-                                    <div placeholder="回复一下吧～" class="input-box">
-                                        <!--                                        <div  class="core-style" contenteditable="true"-->
-                                        <!--                                              style="height: 60px;" id="textareaContent" oninput="updateNum()">-->
-                                        <!--                                        </div>-->
-                                        <textarea oninput="updateNum()" maxlength="100" id="textareaContent"></textarea>
-
-                                        <!--                                        <div class="indicator" style="bottom: 0px; right: 100px;">-->
-                                        <!--                                            <em>0</em>/<span>500</span>-->
-                                        <!--                                        </div>-->
-                                        <div class="commentText">
-                                            <div class="textLine" style="font-size: 12px;"><em>0</em>/<span>100</span>
-                                            </div>
-                                            <button class="sendComment">发送</button>
-                                        </div>
-                                    </div>
-
-
-                                    <!--                                    <div class="row right" style="bottom: -30px; right: 100px;">-->
-                                    <!--                                        <button class="btn-box send-btn"-->
-                                    <!--                                                title="enter 发送shift + enter 换行">-->
-                                    <!--                                            发送-->
-                                    <!--                                        </button>-->
+                                    <!--                                    <div class="msg-item not-me">-->
+                                    <!--                                        <a title=""-->
+                                    <!--                                           target="_blank" class="avatar"-->
+                                    <!--                                           style="background-image: url(../static/avatars/img_0.png);"></a>-->
+                                    <!--                                        <div class="message">-->
+                                    <!--                                            <div class="message-content"></div>-->
+                                    <!--                                        </div>-->
                                     <!--                                    </div>-->
 
+                                    <!--                                    <div class="msg-item is-me">-->
+                                    <!--                                        <a title=""-->
+                                    <!--                                           target="_blank" class="avatar"-->
+                                    <!--                                           style="background-image: url(../static/avatars/img_3.png);  float: right;"></a>-->
+                                    <!--                                        <div class="message">-->
+                                    <!--                                            <div class="message-content is-me"></div>-->
+                                    <!--                                        </div>-->
                                 </div>
-                            </div>
-                        </div>
 
+                            </div>
+
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 
 <div class="layui-row" style="margin-top: 30px;margin-bottom: 20px;text-align: center;color: darkgrey"
@@ -312,10 +280,7 @@
 <script th:inline="javascript">
 
     let user = [[${user}]]
-    let dynamics = [[${dynamics}]]
-    let articles = [[${articles}]]
     let userDto = [[${userDto}]]
-    let favorites = [[${favorites}]]
 
     //关注
     followUser = function (prefix, id) {
@@ -384,8 +349,8 @@
         websocket.close();
     }
     websocket.onmessage = function (e) {
-        console.log(e.data);
         let resp = JSON.parse(e.data);
+        console.log(resp);
         if (resp.status == -1) {
             if (confirm(resp.message)) {
                 location.assign("login");
@@ -399,44 +364,60 @@
                 createChatList(resp);
             }
             if (resp.message == "sendMessage") {
-                let MessageList = document.querySelector('.MessageList');
+                let MessageList = document.querySelector('.message-list');
+                let avatar = "";
                 for (let message of resp.messages) {
                     if (message.isSender) {
+                        avatar = message.avatar;
                         let fromus = document.createElement('div');
-                        fromus.className = 'fromus';
-                        let img = document.createElement('img');
-                        img.src = message.avatar;
-                        img.className = 'pg';
+                        fromus.className = 'msg-item not-me';
+                        let a = document.createElement('a');
+                        a.title = message.username;
+                        a.className = 'avatar';
+                        a.style.backgroundImage = 'url(' + message.avatar + ')';
+                        a.style.float = 'right';
                         let sendMes = document.createElement('div');
-                        sendMes.className = 'sendMes';
-                        sendMes.innerHTML = message.message;
-                        fromus.appendChild(img);
+                        sendMes.className = 'message';
+                        sendMes.style.float = 'right';
+                        sendMes.style.backgroundColor = '#80b9f2';
+                        sendMes.style.borderRadius = '16px 0 16px 16px';
+                        let sendMesContent = document.createElement('div');
+                        sendMesContent.className = 'message-content is-me';
+                        sendMesContent.innerHTML = message.message;
+                        sendMes.appendChild(sendMesContent)
+                        fromus.appendChild(a);
                         fromus.appendChild(sendMes);
                         MessageList.appendChild(fromus);
                     } else {
+
                         let tous = document.createElement('div');
-                        tous.className = 'tous';
-                        let img = document.createElement('img');
-                        img.src = message.avatar;
-                        img.className = 'pg';
+                        tous.className = 'msg-item not-me';
+                        let a = document.createElement('a');
+                        a.title = message.username;
+                        a.className = 'avatar';
+                        a.style.backgroundImage = 'url(' + message.avatar + ')';
+                        a.style.float = 'left';
                         let sendMes = document.createElement('div');
-                        sendMes.className = 'sendMes';
-                        sendMes.innerHTML = message.message;
-                        tous.appendChild(img);
+                        sendMes.className = 'message';
+                        let sendMesContent = document.createElement('div');
+                        sendMesContent.className = 'message-content not-me';
+                        sendMesContent.innerHTML = message.message;
+                        sendMes.appendChild(sendMesContent)
+                        tous.appendChild(a);
                         tous.appendChild(sendMes);
                         MessageList.appendChild(tous);
+
                     }
                 }
+
             }
         }
     }
 
     function createChatList(resp) {
+        let username = userDto.username;
         let messages = resp.messages;
-        console.log(messages)
         let tousername = resp.tousername;
-        console.log(tousername)
-
 
         let s = "";
         if (messages != null) {
@@ -444,7 +425,7 @@
                 if (message.isSender) {
                     s += `
                     <div class='msg-item is-me'>
-                        <a title='${userDto.uesrname}'
+                        <a title='${username}'
                            target='_blank' class='avatar'
                            style='background-image: url("${message.avatar}");  float: right;'></a>
                         <div class='message ' style="float: right;background-color: #80b9f2;border-radius: 16px 0 16px 16px; ">
@@ -466,21 +447,41 @@
                             </div>
                         </div>
                         `
-                    // s += "<div class='tous'>";
-                    // s += "<img src='" + message.avatar + "' class='pg'>"
-                    // s += "<div class='sendMes'>" + message.message + "</div>";
-                    // s += "</div>";
+
                 }
             }
         }
-        // s += "</div>";
-        // s += "<div class='inputList'>"
-        // s += "<textarea oninput='updateNum()' maxlength='100' id='textareaContent'></textarea>";
-        // s += "<div class='commentText'>"
-        // s += "<div class='textLine'>还能输入<em>100</em>个字符</div>"
-        // s += "<button class='sendComment' onclick=btnOn('" + tousername + "')>发送</button>";
-        // s += "</div></div>";
         $('.message-list').html(s);
+        let t = "";
+        t += ` <div class="send-box" style="height: 180px">
+                                    <div class="row">
+                                        <div class="space-margin">
+                                            <label class="image-upload-btn"></label>
+                                        </div>
+                                    </div>
+
+                                    <div placeholder="回复一下吧～" class="input-box">
+                                        <!--                                        <div  class="core-style" contenteditable="true"-->
+                                        <!--                                              style="height: 60px;" id="textareaContent" oninput="updateNum()">-->
+                                        <!--                                        </div>-->
+                                        <textarea oninput="updateNum()" maxlength="100" id="textareaContent"></textarea>
+
+                                        <!--                                        <div class="indicator" style="bottom: 0px; right: 100px;">-->
+                                        <!--                                            <em>0</em>/<span>500</span>-->
+                                        <!--                                        </div>-->
+                                        <div class="commentText">
+                                            <div class="textLine" style="font-size: 12px;"><em>0</em>/<span>100</span>
+                                            </div>
+                                            <button class="sendComment" onclick=btnOn("${tousername}")>发送</button>
+                                        </div>
+                                    </div>
+                                </div>`
+
+        if (!$('.dialog').find('.send-box').length) {
+            $('.dialog').append(t);
+        }
+
+
     }
 
     function createList(users) {
@@ -511,25 +512,27 @@
 
     function Chat(s) {
         let username = userDto.username;
-        console.log(username, s)
+
         let req = {
             from: username,
             to: s,
             message: "loadMessage",
         }
 
+        $("#title").html(s);
         websocket.send(JSON.stringify(req));
     }
 
     function btnOn(tousername) {
-        let username = document.querySelector('.username');
+        // let username = document.querySelector('.name');
+        let username = userDto.username;
         let text = $("#textareaContent").val().trim();
         if (text == "") {
             alert("请输入内容,不要输入空格");
             return;
         }
         let req = {
-            from: username.textContent,
+            from: username,
             to: tousername,
             content: text,
             message: "sendMessage",
