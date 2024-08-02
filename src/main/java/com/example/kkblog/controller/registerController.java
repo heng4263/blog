@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Random;
 
 /**
- * @Author xiaoke
+ * @Author Hyh
  * @Date 2024 04 08 23 38
  **/
 @Controller
@@ -59,17 +59,13 @@ public class registerController {
         if (userMapper.selectUserByUsername(user.getUsername()) != null) {
             throw new KKBlogException("该用户名已存在！");
         }
-        // 注册排名
         Integer registerRank = userMapper.selectRegisterRank();
         registerRank = registerRank == null ? 1 : registerRank;
         user.setRegisterRank(registerRank);
-        // 账号状态
         user.setStatus(ACCOUNT_STATUS.NORMAL.ordinal());
-        // 设置头像
         Random random = new Random();
         int i = random.nextInt(10);
         user.setAvatar("/avatars/img_" + i + ".png");
-        // 设置默认背景图片
         user.setBackgroundImage("/avatars/background/bg_0.png");
         userMapper.insert(user);
         return ResponseDto.Success("注册成功！", "");

@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * @Author xiaoke
+ * @Author Hyh
  * @Date 2024 04 08 00 07
  **/
 public class IPUtil {

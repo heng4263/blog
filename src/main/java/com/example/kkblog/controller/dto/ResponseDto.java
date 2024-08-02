@@ -1,7 +1,7 @@
 package com.example.kkblog.controller.dto;
 
 /**
- * @Author xiaoke
+ * @Author Hyh
  * @Date 2024 04 07 23 17
  **/
 public class ResponseDto {

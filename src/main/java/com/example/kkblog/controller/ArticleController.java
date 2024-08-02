@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @Author xiaoke
+ * @Author Hyh
  * @Date 2024 04 27 23 12
  **/
 @Controller
@@ -78,13 +78,9 @@ public class ArticleController {
         userDto.setCommentNumber(dynamicCommentMapper.selectDynamicCommentNumberByUserId(userDto.getId()));
         model.addAttribute("userInfo", userDto);
         articleMapper.addViewById(id);
-        // 查询文章的点赞用户
         model.addAttribute("likes", articleLikeMapper.selectLikeUserByArticleId(articleDetailDto.getId()));
-        // 查询文章的收藏用户
         model.addAttribute("star", starMapper.selectStarUserByArticleId(articleDetailDto.getId()));
-        // 查询评论
         List<ArticleCommentDto> articleCommentDtos = articleCommentMapper.selectParentCommentByArticleId(articleDetailDto.getId());
-        // 查询用户的评论点赞);
         List<Integer> likedCommentIds = new ArrayList<>();
         UserDto loginUser = (UserDto) session.getAttribute("user");
         if (loginUser != null) {
@@ -131,11 +127,8 @@ public class ArticleController {
                 kkBlogService.quoteATag((String) tag);
             }
         }
-        // 设置状态
         article.setStatus(0);
-        // 插入数据库
         articleMapper.insert(article);
-        // 加积分
         kkBlogService.addUserScores(loginUser.getId(), "发布动态", ConstParam.ARTICLE_SCORES);
         return ResponseDto.Success("发布成功！", article);
     }
@@ -286,21 +279,16 @@ public class ArticleController {
         if (loginUser == null) {
             return ResponseDto.Fail("请登录后进行操作~");
         }
-        // 检查是否已经点赞
         if (kkBlogService.userLikedArticleComment(loginUser.getId(), commentId)) {
             return ResponseDto.Fail("你已经点过赞咯~");
         }
-        // 查询被点赞的评论
         ArticleComment articleComment = articleCommentMapper.selectById(commentId);
-        // 新建对象
         ArticleCommentLike commentLike = new ArticleCommentLike();
         commentLike.setCommentId(commentId);
         commentLike.setUserId(loginUser.getId());
         commentLike.setLikedUserId(articleComment.getUserId());
         commentLike.setArticleId(articleComment.getArticleId());
-        // 插入数据库
         articleCommentLikeMapper.insert(commentLike);
-        // 更新评论点赞数量
         articleCommentMapper.addLikeById(commentId);
         return ResponseDto.Success("点赞成功",  articleCommentMapper.selectById(commentId));
     }
@@ -313,13 +301,11 @@ public class ArticleController {
         if (loginUser == null) {
             return ResponseDto.Fail("请登录后进行操作~");
         }
-        // 检查是否已经点赞
         if (!kkBlogService.userLikedArticleComment(loginUser.getId(), commentId)) {
             return ResponseDto.Fail("你已经点过赞咯~");
         }
-        // 删除点赞数据
         kkBlogService.deleteUserLikeArticleComment(loginUser.getId(), commentId);
-        // 更新评论点赞数量
+
         articleCommentMapper.cancelLikeById(commentId);
         return ResponseDto.Success("取消点赞成功", articleCommentMapper.selectById(commentId));
     }

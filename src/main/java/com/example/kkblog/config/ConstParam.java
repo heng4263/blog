@@ -2,7 +2,7 @@ package com.example.kkblog.config;
 
 /**
  * 系统固定参数
- * @author xiaoke
+ * @author Hyh
  * @date 2024/4/17
  */
 public class ConstParam {

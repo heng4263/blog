@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * 全局异常处理
  *
- * @Author xiaoke
+ * @Author Hyh
  * @Date 2024 04 08 19 30
  **/
 @ControllerAdvice

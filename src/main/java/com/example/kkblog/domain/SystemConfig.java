@@ -11,7 +11,7 @@ import java.util.Date;
 
 /**
  * 系统配置
- * @author xiaoke
+ * @author Hyh
  * @date 2024/4/7
  */
 @Data

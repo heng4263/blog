@@ -24,7 +24,7 @@ import java.util.UUID;
 
 /**
  * 验证码
- * @Author xiaoke
+ * @Author Hyh
  * @Date 2024 04 17 23 13
  **/
 @RestController

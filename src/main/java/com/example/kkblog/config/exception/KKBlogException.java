@@ -4,7 +4,7 @@ import lombok.Getter;
 
 /**
  * 自定义全局异常
- * @Author xiaoke
+ * @Author Hyh
  * @Date 2024 04 08 19 34
  **/
 @Getter

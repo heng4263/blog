@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * @Author xiaoke
+ * @Author Hyh
  * @Date 2024 04 12 19 42
  **/
 @Controller
@@ -88,7 +88,6 @@ public class dynamicController {
             if (StringUtils.isEmpty(dynamic.getDynamic())) {
                 return ResponseDto.Fail("请输入您想分享的动态内容！");
             }
-            // 设置预览文字
             if (dynamic.getDynamic().length() > 200) {
                 dynamic.setPreView(dynamic.getDynamic().substring(0, 200) + "...");
             } else {
@@ -98,7 +97,6 @@ public class dynamicController {
             if (StringUtils.isEmpty(dynamic.getTitle())) {
                 return ResponseDto.Fail("请输入话题的标题！");
             }
-            // 设置预览文字
             dynamic.setPreView(dynamic.getPreView().replaceAll("<", "《").replaceAll(">", "》"));
             if (dynamic.getPreView().length() > 200) {
                 dynamic.setPreView(dynamic.getPreView().substring(0, 200) + "...");
@@ -107,9 +105,7 @@ public class dynamicController {
         // 设置用户id
         UserDto user = (UserDto) session.getAttribute("user");
         dynamic.setUserId(user.getId());
-        // 获取ip地址
         dynamic.setIpLocation(user.getIpLocation());
-        // 获取标签
         String tagString = dynamic.getTags();
         if (!StringUtils.isEmpty(tagString)) {
             JSONArray tags = JSON.parseArray(tagString);
@@ -117,11 +113,8 @@ public class dynamicController {
                 kkBlogService.quoteATag((String) tag);
             }
         }
-        // 设置状态
         dynamic.setStatus(0);
-        // 插入数据库
         dynamicMapper.insert(dynamic);
-        // 加积分
         kkBlogService.addUserScores(user.getId(), "发布动态", ConstParam.DYNAMIC_SCORES);
         return ResponseDto.Success("发布成功！", dynamic);
     }
@@ -143,17 +136,12 @@ public class dynamicController {
             return "error/404";
         }
         UserDto userDto = userMapper.selectUserDtoByUserId(dynamicDetailDto.getUserId());
-        // 查询用户话题数量
         userDto.setDynamicNumber(dynamicMapper.selectDynamicNumberByUserId(userDto.getId()));
-        // 查询用户评论数量
         userDto.setCommentNumber(dynamicCommentMapper.selectDynamicCommentNumberByUserId(userDto.getId()));
         model.addAttribute("userInfo", userDto);
         dynamicMapper.addViewById(id);
-        // 查询动态文章的点赞用户
         model.addAttribute("likes", likeMapper.selectLikeUserByDynamicId(dynamicDetailDto.getId()));
-        // 查询所有评论(父评论)
         List<DynamicCommentDto> dynamicCommentDtos = dynamicCommentMapper.selectParentCommentByDynamicId(dynamicDetailDto.getId());
-        // 查询动态文章的收藏用户
         model.addAttribute("star", starMapper.selectStarUserByDynamicId(dynamicDetailDto.getId()));
         List<Integer> likedCommentIds = new ArrayList<>();
         // 获取当前登录用户
@@ -162,20 +150,15 @@ public class dynamicController {
             CommentLike commentLike = new CommentLike();
             commentLike.setUserId(loginUser.getId());
             commentLike.setDynamicId(dynamicDetailDto.getId());
-            // 查询用户所有评论是否被点赞
             likedCommentIds = commentLikeMapper.selectLikedCommentIds(commentLike);
-            // 查询动态是否被点赞、收藏
             dynamicDetailDto.setLiked(likeMapper.selectIfUserLike(loginUser.getId() + "_" + dynamicDetailDto.getId()) > 0);
             dynamicDetailDto.setStared(starMapper.selectIfUserStar(loginUser.getId() + "_" + dynamicDetailDto.getId()) > 0);
         }
         // 遍历所有父评论
         for (DynamicCommentDto item : dynamicCommentDtos) {
-            // 设置被点赞的父评论
             item.setLiked(likedCommentIds.contains(item.getId()));
-            // 查询该父评论下的所有子评论
             List<DynamicCommentDto> childComments = dynamicCommentMapper.selectChildCommentByParentId(item.getId());
             for (DynamicCommentDto childComment : childComments) {
-                // 设置被点赞的子评论
                 childComment.setLiked(likedCommentIds.contains(childComment.getId()));
             }
             item.setChildren(childComments);
@@ -265,7 +248,6 @@ public class dynamicController {
         dynamicMapper.addStarById(dynamicId);
         QueryWrapper<Star> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("dynamic_id", dynamicId);
-        // 返回收藏总数和具体的收藏用户列表
         return ResponseDto.Success(String.valueOf(starMapper.selectCount(queryWrapper)), starMapper.selectStarUserByDynamicId(dynamicId));
     }
 
@@ -288,14 +270,12 @@ public class dynamicController {
                                 @RequestParam("commentId") Integer commentId,
                                 HttpSession session) {
         DynamicComment dynamicComment = dynamicCommentMapper.selectById(commentId);
-        // 查询登录用户的点赞
         List<Integer> likedCommentIds = new ArrayList<>();
         UserDto loginUser = (UserDto) session.getAttribute("user");
         if (loginUser != null) {
             CommentLike commentLike = new CommentLike();
             commentLike.setUserId(loginUser.getId());
             commentLike.setDynamicId(dynamicId);
-            // 登录用户的所有点赞
             likedCommentIds = commentLikeMapper.selectLikedCommentIds(commentLike);
         }
         // 加载更多父亲评论
@@ -303,7 +283,6 @@ public class dynamicController {
             DynamicComment query = new DynamicComment();
             query.setId(commentId);
             query.setDynamicId(dynamicId);
-            // 查询被隐藏的父评价
             List<DynamicCommentDto> dynamicCommentDtos = dynamicCommentMapper.selectMoreParentCommentByDynamicId(query);
             // 设置加载父评论和该父评论的子评论点赞
             for (DynamicCommentDto item : dynamicCommentDtos) {
@@ -335,22 +314,17 @@ public class dynamicController {
         if (user == null) {
             return ResponseDto.Fail("请登录后进行操作~");
         }
-        // 检查是否已经点赞
         if (commentLikeMapper.selectIfUserLike(user.getId() + "_" + commentId) > 0) {
             return ResponseDto.Fail("你已经点过赞咯~");
         }
-        // 查询被点赞的评论
         DynamicComment dynamicComment = dynamicCommentMapper.selectById(commentId);
-        // 新建对象
         CommentLike commentLike = new CommentLike();
         commentLike.setCommentId(commentId);
         commentLike.setUserId(user.getId());
         commentLike.setUserAndCommentId(user.getId() + "_" + commentId);
         commentLike.setLikedUserId(dynamicComment.getUserId());
         commentLike.setDynamicId(dynamicComment.getDynamicId());
-        // 插入数据库
         commentLikeMapper.insert(commentLike);
-        // 更新评论点赞数量
         dynamicCommentMapper.addLikeById(commentId);
         return ResponseDto.Success("点赞成功", dynamicCommentMapper.selectById(commentId));
     }
@@ -363,13 +337,10 @@ public class dynamicController {
         if (user == null) {
             return ResponseDto.Fail("请登录后进行操作~");
         }
-        // 检查是否已经点赞
         if (commentLikeMapper.selectIfUserLike(user.getId() + "_" + commentId) == 0) {
             return ResponseDto.Fail("你还没有对这条评论点过赞~");
         }
-        // 删除点赞数据
         commentLikeMapper.deleteByUserCommentId(user.getId() + "_" + commentId);
-        // 更新评论点赞数量
         dynamicCommentMapper.cancelLikeById(commentId);
         return ResponseDto.Success("取消点赞成功", dynamicCommentMapper.selectById(commentId));
     }
